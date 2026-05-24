@@ -44,13 +44,60 @@
   <!-- ===== Step 1: ディスクレーマー同意 ===== -->
   <section id="step-disclaimer" class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 sm:p-6 mb-6">
     <h2 class="text-lg font-bold text-slate-800 mb-3">はじめにお読みください</h2>
-    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 text-sm text-slate-700 leading-relaxed mb-4">
-      <p class="mb-2">本ツールは一般的なシミュレーションを提供するもので、特定の金融商品の購入・売却を推奨するものではありません。投資判断はご自身の責任で行ってください。</p>
-      <p>個別の商品選定や税務・法務の相談は、有資格者（IFA・税理士・社労士・FP 等）にご相談ください。</p>
+
+    <!-- 個人情報・データの扱い（誓約 6 項目）-->
+    <div class="bg-emerald-50 border-2 border-emerald-300 rounded-lg p-4 mb-4">
+      <h3 class="font-bold text-emerald-800 mb-3 flex items-center gap-2">
+        <span>🔒</span>
+        <span>個人情報・入力データの取り扱い</span>
+      </h3>
+      <p class="text-xs text-emerald-700 mb-3">お金のことを入力するのは不安だと思います。だからこそ、データの扱いを正直に書きます。<strong>すべての約束は技術的に裏付けがあり、ソースコードで誰でも確認できます</strong>。</p>
+
+      <ol class="space-y-3 text-sm text-slate-700 leading-relaxed">
+        <li>
+          <strong class="text-emerald-800">① 個人情報は一切収集しません</strong><br>
+          <span class="text-xs text-slate-600">氏名・住所・電話番号・メールアドレスなど、あなたを特定できる情報の入力欄はありません。入力するのは年齢・月収・月支出などの<strong>数値だけ</strong>です。</span>
+        </li>
+        <li>
+          <strong class="text-emerald-800">② 入力データはサーバーに送信されません</strong><br>
+          <span class="text-xs text-slate-600">すべての計算は<strong>あなたのスマホ・PC のブラウザの中だけ</strong>で完結します。入力した金額・診断結果は、運営者を含めた誰にも見えません。インターネット経由でどこにも送信されません。</span>
+        </li>
+        <li>
+          <strong class="text-emerald-800">③ データはあなたの端末の中にだけ保存されます</strong><br>
+          <span class="text-xs text-slate-600">次回アクセス時に入力を引き継げるよう、ブラウザの localStorage（あなたの端末内の専用領域）に保存します。<strong>別のスマホ・PC からアクセスしても、その入力データは見えません</strong>。</span>
+        </li>
+        <li>
+          <strong class="text-emerald-800">④ クッキー・トラッキングは一切使用していません</strong><br>
+          <span class="text-xs text-slate-600">Google Analytics 等のアクセス解析、広告クッキー、行動追跡などは<strong>一切組み込まれていません</strong>。</span>
+        </li>
+        <li>
+          <strong class="text-emerald-800">⑤ データはいつでも削除できます</strong><br>
+          <span class="text-xs text-slate-600">結果画面下の「最初からやり直す（入力もリセット）」ボタンで、保存された全データを削除できます。または、ブラウザの履歴・サイトデータ削除でも消えます。</span>
+        </li>
+        <li>
+          <strong class="text-emerald-800">⑥ ソースコードを公開しています</strong><br>
+          <span class="text-xs text-slate-600">このアプリのコードは <a href="https://github.com/smartside-jp/asset-planning-checkup" target="_blank" class="text-emerald-700 underline">GitHub</a> で公開されており、誰でも内部の動作を確認できます。「本当にサーバーに送ってないか」は技術が分かる人に見てもらえば検証可能です。</span>
+        </li>
+      </ol>
     </div>
+
+    <!-- 利用上の注意 -->
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 text-sm text-slate-700 leading-relaxed mb-4">
+      <h3 class="font-bold text-amber-800 mb-2 flex items-center gap-2">
+        <span>⚠️</span>
+        <span>ご利用にあたって</span>
+      </h3>
+      <ul class="ml-4 list-disc space-y-1 text-xs">
+        <li>本ツールは特定の金融商品の購入・売却を推奨するものではありません</li>
+        <li>表示される金額は一般的な統計・利回り想定に基づくシミュレーションです（精度には限界があります）</li>
+        <li>個別の商品選定や税務・法務の相談は、有資格者（IFA・税理士・社労士・FP 等）にご相談ください</li>
+        <li>本ツールの利用によって生じた一切の損失について、運営者は責任を負いません</li>
+      </ul>
+    </div>
+
     <label class="flex items-start gap-2 cursor-pointer">
       <input type="checkbox" id="agree-check" class="mt-1 w-4 h-4">
-      <span class="text-sm text-slate-700">内容を理解しました</span>
+      <span class="text-sm text-slate-700"><strong>個人情報・データの取り扱い（6 項目）と、ご利用上の注意を理解しました</strong></span>
     </label>
     <button id="agree-btn" disabled
             class="mt-4 px-6 py-2 bg-sky-500 text-white rounded-md hover:bg-sky-600 disabled:bg-slate-300 disabled:cursor-not-allowed transition">
