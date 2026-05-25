@@ -1654,7 +1654,7 @@ function diagnose(d) {
       level: 'red',
       title: '変額保険に加入してる',
       finding: '保障と運用を 1 つの商品で混ぜている状態です。年率コストが 1.5〜2% 前後かかっていることが多く、長期で見ると大きな差になります。',
-      alternative: '<strong>掛け捨ての生命保険（月 1,000 円前後）+ NISA でインデックスファンド積立</strong>に分離する方法があります。30 年積立で約 1,000 万円の差がつくケースも（参考：smart-side ブログ「保障と運用は分けるべき」）',
+      alternative: '<strong>掛け捨ての生命保険（月 1,000 円前後）+ NISA でインデックスファンド積立</strong>に分離する方法があります。30 年積立で約 1,000 万円の差がつくケースも。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-savings-insurance/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：貯蓄型保険とは（smart-side）→</a>',
     });
   }
 
@@ -1665,7 +1665,7 @@ function diagnose(d) {
       level: 'red',
       title: '銀行貯金が「いざという時の備え」を超えてる',
       finding: `あなたの月支出とリスク許容度から、いざという時の備え目安は <strong>${formatYen(emergencyFund)}</strong>（${emergencyMonths} ヶ月分）。<br>今の銀行貯金は <strong>${formatYen(d.bank)}</strong> なので、<strong>${formatYen(excess)}</strong> がそれを超えて眠っています。`,
-      alternative: '備えを超える分は、NISA でインデックスファンド積立に回すと長期で増える可能性があります。銀行金利は年 0.001〜0.3% 程度ですが、株式インデックスは過去 30 年で年 5% 前後の実績。<strong>全額じゃなく、まず月 3,000 円から</strong>でも十分です。',
+      alternative: '備えを超える分は、NISA でインデックスファンド積立に回すと長期で増える可能性があります。銀行金利は年 0.001〜0.3% 程度ですが、株式インデックスは過去 30 年で年 5% 前後の実績。<strong>全額じゃなく、まず月 3,000 円から</strong>でも十分です。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-wealth-building/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：資産形成とは（smart-side）→</a>',
     });
   }
 
@@ -1676,7 +1676,7 @@ function diagnose(d) {
       level: 'yellow',
       title: 'いざという時の備え確保が先・NISA もまだ',
       finding: `いざという時の備え目安は <strong>${formatYen(emergencyFund)}</strong>（${emergencyMonths} ヶ月分）。今の銀行貯金 <strong>${formatYen(d.bank)}</strong> だと、あと <strong>${formatYen(remaining)}</strong> 足りません。投資より先にここを満たすのが王道です。`,
-      alternative: 'まず銀行貯金で備えを満たす → その後 NISA でインデックス積立、の順番で。<strong>備えができたらサブスク 1 つ分（月 3,000 円）から</strong>始められます。先回りで「ネット証券で口座だけ開く」のもアリ（口座開設は無料）。',
+      alternative: 'まず銀行貯金で備えを満たす → その後 NISA でインデックス積立、の順番で。<strong>備えができたらサブスク 1 つ分（月 3,000 円）から</strong>始められます。先回りで「ネット証券で口座だけ開く」のもアリ（口座開設は無料）。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-wealth-building/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：資産形成とは（smart-side）→</a>',
     });
   }
 
@@ -1687,7 +1687,7 @@ function diagnose(d) {
       level: 'yellow',
       title: '学資保険は最善でないケースが多い',
       finding: `教育資金の積み立て方として、学資保険の返戻率は一般的に 105〜110%（18 年で 1.05〜1.10 倍・実質年利 0.3〜0.5%）。同じ期間で NISA インデックスファンド運用すると期待リターンは年 5% 想定で 1.5〜2 倍前後。${isNisaActive ? `NISA は既に積立中ですが、追加余力があれば NISA 増額の検討を。` : `<strong>NISA はまだ未積立</strong>とのことなので、追加余力分は NISA に振り向ける検討を。`}`,
-      alternative: '<strong>教育資金の積み立て方は、現在、学資保険は最善の方法ではないケースが多い為、NISA や、こども NISA（2027 年 1 月〜開始予定）等の制度を検討しましょう</strong>。「強制積立装置」が必要なら学資保険よりも<strong>こども NISA の自動積立設定</strong>の方が運用効率・流動性ともに有利なケースが多いです。',
+      alternative: '<strong>教育資金の積み立て方は、現在、学資保険は最善の方法ではないケースが多い為、NISA や、こども NISA（2027 年 1 月〜開始予定）等の制度を検討しましょう</strong>。「強制積立装置」が必要なら学資保険よりも<strong>こども NISA の自動積立設定</strong>の方が運用効率・流動性ともに有利なケースが多いです。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-savings-insurance/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：貯蓄型保険とは（smart-side）→</a>',
     });
   }
 
@@ -1697,7 +1697,7 @@ function diagnose(d) {
       level: 'yellow',
       title: '個人年金保険に加入してる',
       finding: '個人年金保険の返戻率は一般的に 105〜110%（30 年で 1.05〜1.10 倍）程度・実質年利は 0.2〜0.3% に近い。同期間 NISA インデックスで運用すれば期待リターンは年 5% 想定で 4 倍以上の差がつきます。',
-      alternative: '個人年金保険料控除のメリットはあるので即解約は要検討ですが、<strong>NISA を並行 or 優先する</strong>のがおすすめ。新規の積立余力は NISA インデックスへ。',
+      alternative: '個人年金保険料控除のメリットはあるので即解約は要検討ですが、<strong>NISA を並行 or 優先する</strong>のがおすすめ。新規の積立余力は NISA インデックスへ。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-savings-insurance/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：貯蓄型保険とは（smart-side）→</a>',
     });
   }
 
@@ -1719,7 +1719,7 @@ function diagnose(d) {
       level: 'red',
       title: '銀行窓販で投資信託を契約してる',
       finding: '銀行で契約する投資信託は信託報酬が高め（年 1〜1.5% 前後）の商品が多いです。ネット証券の同類インデックス（年 0.06% 前後）と比べて、30 年積立で約 876 万円の差がつくケースも。',
-      alternative: '<strong>ネット証券で NISA 口座を開いて、eMAXIS Slim 級（年 0.06% 前後）のインデックスファンド</strong>に乗り換えるのが王道。信託報酬の差は長期で大きく効きます。',
+      alternative: '<strong>ネット証券で NISA 口座を開いて、eMAXIS Slim 級（年 0.06% 前後）のインデックスファンド</strong>に乗り換えるのが王道。信託報酬の差は長期で大きく効きます。<br><br>📖 <a href="https://smart-side.dev/posts/how-to-choose-wealth-building/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：資産形成の選び方（smart-side）→</a>',
     });
   }
 
@@ -1729,7 +1729,7 @@ function diagnose(d) {
       level: 'red',
       title: '外貨建て保険に加入してる',
       finding: '外貨建て保険は「保障 + 運用 + 為替リスク + 手数料」を 1 つの商品に混ぜたもの。表面利率は高く見えても、為替手数料や契約コストを引くと実質利回りは見劣りすることが多いです。',
-      alternative: '<strong>掛け捨て生命保険 + NISA インデックスファンド</strong>に分離するのが王道。為替で勝負したい場合も、保険ではなく外貨 MMF や外国株式インデックスのほうがコストが低い。',
+      alternative: '<strong>掛け捨て生命保険 + NISA インデックスファンド</strong>に分離するのが王道。為替で勝負したい場合も、保険ではなく外貨 MMF や外国株式インデックスのほうがコストが低い。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-savings-insurance/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：貯蓄型保険とは（smart-side）→</a>',
     });
   }
 
@@ -1754,7 +1754,7 @@ function diagnose(d) {
       level: 'yellow',
       title: `保険料が手取りの ${(insRatio * 100).toFixed(0)}% で重め`,
       finding: `毎月の保険料合計 <strong>${formatYen(insMonthly)}</strong> が手取り ${formatYen(d.income)} の ${(insRatio * 100).toFixed(0)}% を占めています。一般的な目安は手取りの <strong>5〜10%</strong> 程度。それを超えると家計圧迫や投資余力の不足に繋がります。`,
-      alternative: '保障と運用が混ざった保険（変額・外貨建て・貯蓄型・個人年金）は<strong>掛け捨て + NISA に分離</strong>で大幅にコスト削減できます。必要保障額（遺族年金考慮済）を見直して、過剰な保障部分を整理する検討を。',
+      alternative: '保障と運用が混ざった保険（変額・外貨建て・貯蓄型・個人年金）は<strong>掛け捨て + NISA に分離</strong>で大幅にコスト削減できます。必要保障額（遺族年金考慮済）を見直して、過剰な保障部分を整理する検討を。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-savings-insurance/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：貯蓄型保険とは（smart-side）→</a>',
     });
   }
 
@@ -1776,7 +1776,7 @@ function diagnose(d) {
       level: 'yellow',
       title: `NISA 月額 ${formatYen(d.nisaMonthly)} がつみたて投資枠の上限超え`,
       finding: `つみたて投資枠の上限は月 10 万円（年 120 万円）です。それを超える額は<strong>成長投資枠</strong>（年 240 万円・合計年 360 万円まで）からの拠出になります。入力値を確認してください。`,
-      alternative: '月 10 万円超を NISA で積み立てる場合：つみたて投資枠（月 10 万）+ 成長投資枠（残り）の併用が王道。NISA の生涯非課税枠は合計 1,800 万円なので、急ぐ必要はありません。',
+      alternative: '月 10 万円超を NISA で積み立てる場合：つみたて投資枠（月 10 万）+ 成長投資枠（残り）の併用が王道。NISA の生涯非課税枠は合計 1,800 万円なので、急ぐ必要はありません。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-investment-types/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：投資の種類（smart-side）→</a>',
     });
   }
 
@@ -1787,7 +1787,7 @@ function diagnose(d) {
       level: 'yellow',
       title: `銀行貯金が備え目安の ${(d.bank / emergencyFund).toFixed(1)} 倍・現金が眠ってる可能性`,
       finding: `備え目安 ${formatYen(emergencyFund)} に対して銀行貯金 <strong>${formatYen(d.bank)}</strong>。差額 <strong>${formatYen(excess)}</strong> が活かしきれていない状態（NISA 積立は既にできてますが、超過現金は別途検討余地あり）。`,
-      alternative: '設計者方針：<strong>現役期（〜44 歳）は防衛資金 + 5 年以内の想定出費（住宅頭金・教育費等）以外は NISA でインデックス投資</strong>。NISA 月額を増やす or 想定出費の予算を明確化して残りは追加投資へ。',
+      alternative: '設計者方針：<strong>現役期（〜44 歳）は防衛資金 + 5 年以内の想定出費（住宅頭金・教育費等）以外は NISA でインデックス投資</strong>。NISA 月額を増やす or 想定出費の予算を明確化して残りは追加投資へ。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-wealth-building/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：資産形成とは（smart-side）→</a>',
     });
   }
 
@@ -2619,10 +2619,20 @@ function renderAction(d, result) {
     `;
   }
 
-  // 共通メッセージ
+  // 共通メッセージ + smart-side 関連記事リンク
   html += `
+    <div class="bg-slate-50 border border-slate-200 rounded p-3 mt-4">
+      <p class="font-bold text-slate-700 text-sm mb-2">📖 もっと詳しく知るための関連記事</p>
+      <ul class="ml-4 list-disc text-xs text-slate-700 space-y-1">
+        <li><a href="https://smart-side.dev/posts/what-is-wealth-building/" target="_blank" rel="noopener" class="text-sky-600 underline">資産形成とは（smart-side）→</a></li>
+        <li><a href="https://smart-side.dev/posts/what-is-investment-types/" target="_blank" rel="noopener" class="text-sky-600 underline">投資の種類（smart-side）→</a></li>
+        <li><a href="https://smart-side.dev/posts/how-to-choose-wealth-building/" target="_blank" rel="noopener" class="text-sky-600 underline">資産形成の選び方（smart-side）→</a></li>
+        <li><a href="https://smart-side.dev/posts/what-is-savings-insurance/" target="_blank" rel="noopener" class="text-sky-600 underline">貯蓄型保険とは（smart-side）→</a></li>
+        <li><a href="https://smart-side.dev/posts/glide-from-45-to-60/" target="_blank" rel="noopener" class="text-sky-600 underline">45-60 歳の出口戦略（smart-side）→</a></li>
+      </ul>
+    </div>
     <div class="text-xs text-slate-500 mt-4 leading-relaxed">
-      ※ 個別の証券会社名・ファンド名は出していません。「ネット証券」「インデックスファンド」のようなカテゴリ名で表記しています。具体的な選び方は <a href="https://smart-side.dev" class="text-sky-600 underline" target="_blank">smart-side</a> や有資格者にご相談ください。
+      ※ 個別の証券会社名・ファンド名は出していません。「ネット証券」「インデックスファンド」のようなカテゴリ名で表記しています。具体的な選び方は <a href="https://smart-side.dev" class="text-sky-600 underline" target="_blank" rel="noopener">smart-side</a> や有資格者にご相談ください。
     </div>
   `;
 
