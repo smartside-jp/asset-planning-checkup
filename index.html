@@ -1751,18 +1751,29 @@ function diagnose(d) {
     });
   }
 
-  // Rule 9: 防衛資金不足 + NISA 未着手（Sprint 34: 総備え目安基準）
-  if (d.bank < totalReserve && !nisaActive) {
+  // Rule 9: 備え不足（Sprint 34: 総備え目安基準・Sprint 35: NISA 状態に関係なく検出）
+  if (d.bank < totalReserve) {
     const remaining = totalReserve - d.bank;
     const reserveBreakdown = shortTermTotal > 0
       ? `生活防衛資金 <strong>${formatYen(emergencyFund)}</strong>（${emergencyMonths} ヶ月分）+ 5 年以内の想定出費 <strong>${formatYen(shortTermTotal)}</strong> = <strong>${formatYen(totalReserve)}</strong>`
       : `生活防衛資金 <strong>${formatYen(emergencyFund)}</strong>（${emergencyMonths} ヶ月分）= <strong>${formatYen(totalReserve)}</strong>`;
-    nejireList.push({
-      level: 'yellow',
-      title: 'いざという時の備え確保が先・NISA もまだ',
-      finding: `備え目安は ${reserveBreakdown}。今の銀行貯金 <strong>${formatYen(d.bank)}</strong> だと、あと <strong>${formatYen(remaining)}</strong> 足りません。投資より先にここを満たすのが王道です。`,
-      alternative: 'まず銀行貯金で備えを満たす → その後 NISA でインデックス積立、の順番で。<strong>備えができたらサブスク 1 つ分（月 3,000 円）から</strong>始められます。先回りで「ネット証券で口座だけ開く」のもアリ（口座開設は無料）。<br><br>📖 <a href="https://smart-side.dev/posts/nisa-3000-yen-start/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：NISA は 3,000 円から始められる（smart-side）→</a>',
-    });
+    if (nisaActive) {
+      // NISA 既に積立中：現金備えの上積み or 短期積立として確保を推奨
+      nejireList.push({
+        level: 'yellow',
+        title: '現金備えが不足してる（NISA 積立中でも）',
+        finding: `備え目安は ${reserveBreakdown}。今の銀行貯金 <strong>${formatYen(d.bank)}</strong> だと、あと <strong>${formatYen(remaining)}</strong> 不足。NISA 積立は良い習慣ですが、5 年以内に確実に使う予定のお金は<strong>現金や短期定期で確保</strong>するのが鉄則です（株価が下がっているタイミングで取り崩すと損失確定するため）。`,
+        alternative: `<strong>NISA 月額を一時的に減らす</strong>か、<strong>家計の余りを現金備えへ優先配分</strong>して、まず ${formatYen(totalReserve)} を確保しましょう。住宅頭金など使用時期が決まっているお金は、ネット銀行の高金利定期や個人向け国債（変動 10 年）も選択肢です。備えが満ちたら NISA 月額を元に戻す or 増やす。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-wealth-building/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：資産形成とは（smart-side）→</a>`,
+      });
+    } else {
+      // NISA 未着手：まず備えを満たす → NISA の順
+      nejireList.push({
+        level: 'yellow',
+        title: 'いざという時の備え確保が先・NISA もまだ',
+        finding: `備え目安は ${reserveBreakdown}。今の銀行貯金 <strong>${formatYen(d.bank)}</strong> だと、あと <strong>${formatYen(remaining)}</strong> 足りません。投資より先にここを満たすのが王道です。`,
+        alternative: 'まず銀行貯金で備えを満たす → その後 NISA でインデックス積立、の順番で。<strong>備えができたらサブスク 1 つ分（月 3,000 円）から</strong>始められます。先回りで「ネット証券で口座だけ開く」のもアリ（口座開設は無料）。<br><br>📖 <a href="https://smart-side.dev/posts/nisa-3000-yen-start/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：NISA は 3,000 円から始められる（smart-side）→</a>',
+      });
+    }
   }
 
   // Rule 3: 学資保険加入（常時表示・社長指摘）
