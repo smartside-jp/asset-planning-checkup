@@ -1777,7 +1777,7 @@ function diagnose(d) {
       level: 'red',
       title: `暗号資産が金融資産の ${(cryptoRatio * 100).toFixed(0)}% を占めてる`,
       finding: '日銀と金融庁が「価格大変動」「補償なし」を公式に注意喚起している商品です。投資というより投機寄りで、入門者の主軸にはおすすめされていません。',
-      alternative: '主軸は <strong>NISA インデックスファンド</strong>に。暗号資産は「失っても困らないお金」の範囲（金融資産の 5-10% 以内）にとどめるのが鉄則です。',
+      alternative: '主軸は <strong>NISA インデックスファンド</strong>に。暗号資産は「失っても困らないお金」の範囲（金融資産の 5-10% 以内）にとどめるのが鉄則です。<br><br>📖 <a href="https://smart-side.dev/posts/crypto-as-spice-not-main-dish/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：暗号資産との付き合い方（smart-side）→</a>',
     });
   }
 
@@ -1807,7 +1807,7 @@ function diagnose(d) {
       level: 'yellow',
       title: `住宅ローン返済比率が ${(loanRatio * 100).toFixed(0)}% で高め`,
       finding: '一般的な目安は 25% 以内・余裕を見ても 30% まで。35% を超えると、突発的な収入減や予期せぬ大支出に弱くなります。',
-      alternative: '<strong>繰上返済 vs 投資</strong>はローン金利次第。金利が 1% 以下なら投資（NISA）を優先する考え方が主流。金利が高ければ繰上返済も選択肢。生活防衛資金は<strong>必ず確保した上で</strong>判断を。',
+      alternative: '<strong>繰上返済 vs 投資</strong>はローン金利次第。金利が 1% 以下なら投資（NISA）を優先する考え方が主流。金利が高ければ繰上返済も選択肢。生活防衛資金は<strong>必ず確保した上で</strong>判断を。<br><br>📖 <a href="https://smart-side.dev/posts/mortgage-prepayment-vs-nisa/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：繰上返済 vs NISA（smart-side）→</a>',
     });
   }
 
@@ -1834,7 +1834,7 @@ function diagnose(d) {
       level: 'yellow',
       title: `住宅維持費 年 ${formatYen(annualMaint)}（取得価格の 1% 想定）の見落としチェック`,
       finding: `持ち家には固定資産税・修繕積立・火災保険等で年間 取得価格の <strong>約 1%</strong> の維持費がかかります。月支出 <strong>${formatYen(d.expense)}</strong> にこの <strong>${formatYen(monthlyMaint)}/月</strong> 分が含まれているか確認を。`,
-      alternative: `月支出にまだ含まれていない場合は、月支出を <strong>+ ${formatYen(monthlyMaint)}</strong> 上方修正して再診断するのがおすすめ。大規模修繕（10〜15 年に 1 回）も別途想定が必要。`,
+      alternative: `月支出にまだ含まれていない場合は、月支出を <strong>+ ${formatYen(monthlyMaint)}</strong> 上方修正して再診断するのがおすすめ。大規模修繕（10〜15 年に 1 回）も別途想定が必要。<br><br>📖 <a href="https://smart-side.dev/posts/hidden-cost-of-owning-home/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：持ち家の隠れた維持費（smart-side）→</a>`,
     });
   }
 
@@ -1888,7 +1888,7 @@ function diagnose(d) {
         level: 'yellow',
         title: `リタイア後もローン返済が ${remainAfterRetire} 年残る見込み`,
         finding: `${bonusNote}・リタイアまで ${yearsToRetire} 年。リタイア後も毎月 <strong>${formatYen(d.loanMonthly)}</strong> の返済が続く計算になります。年金生活でローン返済は家計を圧迫します。${bonusProposal}`,
-        alternative: 'リタイア前の<strong>繰上返済（ボーナス払い増額含む）vs NISA 積立</strong>の優先順位を検討。ローン金利が 1% 以下なら NISA 優先（複利の方が大きく勝つ）/ 1% 超なら繰上返済も選択肢。退職金で残債一括返済の判断も視野に。',
+        alternative: 'リタイア前の<strong>繰上返済（ボーナス払い増額含む）vs NISA 積立</strong>の優先順位を検討。ローン金利が 1% 以下なら NISA 優先（複利の方が大きく勝つ）/ 1% 超なら繰上返済も選択肢。退職金で残債一括返済の判断も視野に。<br><br>📖 <a href="https://smart-side.dev/posts/loan-balance-at-retirement/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：リタイア時のローン残債（smart-side）→</a><br>📖 <a href="https://smart-side.dev/posts/mortgage-without-retirement-payout/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：退職金 × 住宅ローン × iDeCo の組み立て直し（smart-side）→</a>',
       });
     } else if (annualBonus > 0 && d.loanYears > yearsToRetire) {
       // ボーナス払いで解消したケース：肯定的フィードバック
@@ -1896,7 +1896,7 @@ function diagnose(d) {
         level: 'yellow',
         title: '✅ ボーナス払いでリタイア前に完済見込み',
         finding: `ボーナス払い 年 ${formatYen(annualBonus)} を反映すると、実質残 ${effectiveYears} 年でリタイア年齢（${d.retireAge} 歳）までに完済できる計算です。`,
-        alternative: 'ボーナス払いを継続できる前提なら、リタイア時点でローン完済の見通し。ボーナス減少リスクに備え、最終数年は別途貯金からの一括返済も視野に。',
+        alternative: 'ボーナス払いを継続できる前提なら、リタイア時点でローン完済の見通し。ボーナス減少リスクに備え、最終数年は別途貯金からの一括返済も視野に。<br><br>📖 <a href="https://smart-side.dev/posts/loan-balance-at-retirement/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：リタイア時のローン残債（smart-side）→</a>',
       });
     }
   }
@@ -2699,6 +2699,11 @@ function renderAction(d, result) {
         <li><a href="https://smart-side.dev/posts/child-nisa-not-the-only-answer/" target="_blank" rel="noopener" class="text-sky-600 underline">こども NISA だけが正解じゃない（smart-side）→</a></li>
         <li><a href="https://smart-side.dev/posts/what-is-savings-insurance/" target="_blank" rel="noopener" class="text-sky-600 underline">貯蓄型保険とは（smart-side）→</a></li>
         <li><a href="https://smart-side.dev/posts/glide-from-45-to-60/" target="_blank" rel="noopener" class="text-sky-600 underline">45-60 歳の出口戦略（smart-side）→</a></li>
+        <li><a href="https://smart-side.dev/posts/hidden-cost-of-owning-home/" target="_blank" rel="noopener" class="text-sky-600 underline">持ち家の隠れた維持費（smart-side）→</a></li>
+        <li><a href="https://smart-side.dev/posts/mortgage-prepayment-vs-nisa/" target="_blank" rel="noopener" class="text-sky-600 underline">繰上返済 vs NISA（smart-side）→</a></li>
+        <li><a href="https://smart-side.dev/posts/loan-balance-at-retirement/" target="_blank" rel="noopener" class="text-sky-600 underline">リタイア時のローン残債（smart-side）→</a></li>
+        <li><a href="https://smart-side.dev/posts/mortgage-without-retirement-payout/" target="_blank" rel="noopener" class="text-sky-600 underline">退職金 × 住宅ローン × iDeCo の組み立て直し（smart-side）→</a></li>
+        <li><a href="https://smart-side.dev/posts/crypto-as-spice-not-main-dish/" target="_blank" rel="noopener" class="text-sky-600 underline">暗号資産との付き合い方（smart-side）→</a></li>
       </ul>
     </div>
     <div class="text-xs text-slate-500 mt-4 leading-relaxed">
