@@ -701,9 +701,13 @@
 
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-2">
-            公的年金 受給開始年齢（任意・繰下げで増額）
+            公的年金 受給開始年齢（任意・繰上げ/繰下げで増減）
+            <span class="text-xs text-slate-500 font-normal block mt-1">— リタイア年齢とは独立して選択できます。リタイアが早くても年金は最短 60 歳から（繰上げ）。</span>
           </label>
           <div class="flex gap-3 text-sm flex-wrap">
+            <label class="flex items-center gap-1">
+              <input type="radio" name="pensionStartAge" value="60" class="w-4 h-4"> 60 歳（繰上げ・年金 ×0.76）
+            </label>
             <label class="flex items-center gap-1">
               <input type="radio" name="pensionStartAge" value="65" checked class="w-4 h-4"> 65 歳（基準）
             </label>
@@ -1337,8 +1341,11 @@ function calcRetirement(d, reviewOptions, emergencyFund = 0, shortTermTotal = 0)
   const toushinBankM = (d.toushinShin === 'bank') ? (d.toushinShinMonthly || 0) : 0;
   const dcM = d.dcMonthly || 0;
 
-  // 年金繰下げ倍率
-  const pensionMul = d.pensionStartAge === 70 ? 1.42 : d.pensionStartAge === 75 ? 1.84 : 1;
+  // 年金繰上げ/繰下げ倍率（60→0.76 / 65→1.0 / 70→1.42 / 75→1.84）
+  const pensionMul = d.pensionStartAge === 60 ? 0.76
+                   : d.pensionStartAge === 70 ? 1.42
+                   : d.pensionStartAge === 75 ? 1.84
+                   : 1;
   const pensionBase = d.pension > 0 ? d.pension : Math.round((d.income || 0) * 0.5);
   const pensionEst = Math.round(pensionBase * pensionMul);
 
@@ -2157,6 +2164,8 @@ function calcCashflow(d, ret) {
     eventByAgeAll[e.age] = (eventByAgeAll[e.age] || 0) + (e.value || 0);
   });
 
+  // Sprint 33: 年金開始年齢を retireAge から分離（リタイア早期の人の無年金期間を反映）
+  const pensionStartAge = d.pensionStartAge || 65;
   const rows = [];
   for (let age = startAge; age <= endAge; age++) {
     const lifeEventCost = eventByAgeAll[age] || 0;
@@ -2170,8 +2179,19 @@ function calcCashflow(d, ret) {
       expenseAnnual = expenseAnnualNow;
       surplusAnnual = incomeAnnual - expenseAnnual;
       status = (age === retireAge) ? 'リタイア' : '現役期';
+    } else if (age < pensionStartAge) {
+      // Sprint 33: リタイア後・年金開始前の空白期（無年金期間）
+      // 全支出を残資産から取崩。例：retireAge=55 / pensionStartAge=65 → 56-64 歳の 9 年間
+      const prevAsset = rows[rows.length - 1].assetEnd;
+      const totalExpenseAnnual = retireAnnualExpense + lifeEventCost;
+      const rEff = effectiveRate(age, annualRate);
+      assetEnd = Math.round(prevAsset * (1 + rEff) - totalExpenseAnnual);
+      incomeAnnual = 0;
+      expenseAnnual = totalExpenseAnnual;
+      surplusAnnual = -totalExpenseAnnual;
+      status = lifeEventCost > 0 ? '無年金期（イベント年）' : '無年金期';
     } else {
-      // リタイア後：希望生活費 + リタイア後ライフイベント費用（介護等）を残資産から取崩
+      // 年金受給開始：希望生活費 + リタイア後ライフイベント費用を残資産から取崩
       const prevAsset = rows[rows.length - 1].assetEnd;
       const totalExpenseAnnual = retireAnnualExpense + lifeEventCost;
       const gap = Math.max(0, totalExpenseAnnual - pensionAnnual);
@@ -2241,7 +2261,7 @@ function renderCashflowTable(d, ret) {
         📋 年次キャッシュフロー表（5 年単位・100 歳まで）
         <span class="text-xs text-slate-500 font-normal ml-2">— クリックで開く</span>
       </summary>
-      <p class="text-xs text-slate-500 mt-2 mb-3">標準シナリオ（株式部分 5% / 債券部分 1.5%）で計算。45 歳以降はグライドパス（株式比率を年 5% ずつ下げて 60 歳で 50:50）を反映、リタイア後は希望月生活費を維持しながら年金で足りない分を運用中の資産から取り崩す前提です。月単位の入力を年額換算して表示しています。</p>
+      <p class="text-xs text-slate-500 mt-2 mb-3">標準シナリオ（株式部分 5% / 債券部分 1.5%）で計算。45 歳以降はグライドパス（株式比率を年 5% ずつ下げて 60 歳で 50:50）を反映、リタイア後〜年金受給開始までの「無年金期」は全額を運用資産から取崩、年金開始後は希望月生活費を維持しながら年金で足りない分を取崩す前提です。月単位の入力を年額換算して表示しています。</p>
       <div class="overflow-x-auto">
         <table class="w-full text-sm border-collapse border border-slate-300">
           <thead class="bg-slate-100">
@@ -2270,7 +2290,13 @@ function renderRetirement(d, ret, retInsurance, retBank, retReviewed) {
   const pensionParts = [];
   if (d.pension > 0) pensionParts.push('入力値');
   else pensionParts.push('手取り月収の 50% で自動推計');
-  if (d.pensionStartAge !== 65) pensionParts.push(`${d.pensionStartAge} 歳 繰下げ ×${d.pensionStartAge === 70 ? '1.42' : '1.84'}`);
+  if (d.pensionStartAge !== 65) {
+    const mulLabel = d.pensionStartAge === 60 ? '繰上げ ×0.76'
+                   : d.pensionStartAge === 70 ? '繰下げ ×1.42'
+                   : d.pensionStartAge === 75 ? '繰下げ ×1.84'
+                   : '';
+    pensionParts.push(`${d.pensionStartAge} 歳 ${mulLabel}`);
+  }
   const pensionLine = `公的年金 月見込み：<strong>${formatYen(ret.pensionEst)}</strong>（${pensionParts.join(' / ')}）`;
 
   // Sprint 21: 4 パターン定義
