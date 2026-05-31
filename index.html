@@ -793,6 +793,8 @@
 
       <!-- 2-3 段目：相談相手の質を問う + お問い合わせ -->
       <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-2 rounded">
+        <!-- 伴走導線：診断結果に連動した声かけ（setReferralContext で出し分け）-->
+        <p id="referral-result-context" class="text-sm text-slate-800 mb-3 font-medium" style="display:none;"></p>
         <p class="text-sm text-slate-700 mb-2">
           🔸 あなたの周りには、こういったことを<strong>腰を据えて相談できる人</strong>はいますか？
         </p>
@@ -800,7 +802,9 @@
           🔸 その相談相手は、本当に<strong>あなたの利益のために動いてくれる人</strong>ですか？<br>
           <span class="text-xs text-slate-600">（金融商品を売る側の人じゃなく、中立的に整理してくれる人ですか？）</span>
         </p>
-        <p class="text-sm text-slate-700 mb-3">もしモヤモヤがあれば、お気軽にメッセージください。</p>
+        <p class="text-sm text-slate-700 mb-3">もしモヤモヤがあれば、お気軽にメッセージください。<br>
+          <span class="text-xs text-slate-600">「何から手をつければいいか分からない」を一緒に整理するだけでも大丈夫です。</span>
+        </p>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSf17qwgBZqlNR_Srpe35QafLfhjqX5feaXmgoF6TquY2hNuvw/viewform"
            target="_blank" rel="noopener"
            class="inline-block px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition text-sm font-medium">
@@ -2038,6 +2042,31 @@ function renderResult(d) {
 
   // チャート描画（Sprint 6）
   drawCharts(d, result);
+
+  // ⑧ 伴走導線：診断結果に連動した声かけ（Sprint 36）
+  setReferralContext(result);
+}
+
+// Sprint 36: 伴走導線 — 診断結果（赤/黄信号の件数）に連動した声かけを出し分ける。
+// 「分かったけど何から手をつければ…」で止まる人への入口。煽らず中立に。
+function setReferralContext(result) {
+  const el = $('#referral-result-context');
+  if (!el) return;
+  const list = result.nejireList || [];
+  const redCount = list.filter(n => n.level === 'red').length;
+  const yellowCount = list.filter(n => n.level === 'yellow').length;
+  let msg = '';
+  if (redCount > 0) {
+    msg = `🔸 今回、見直しの余地が <strong>${redCount} 個</strong> 見つかりました。頭では分かっても、いざ自分でとなると「どれから手をつける？」で止まりがちです。`;
+  } else if (yellowCount > 0) {
+    msg = `🔸 今回、気にとめておきたい点が <strong>${yellowCount} 個</strong> ありました。「この方向で合ってる？」を確かめておくと安心です。`;
+  }
+  if (msg) {
+    el.innerHTML = msg;
+    el.style.display = '';
+  } else {
+    el.style.display = 'none';
+  }
 }
 
 function renderAllocation(d, alloc, result) {
