@@ -105,6 +105,102 @@
     </button>
   </section>
 
+  <!-- ===== Step 1.5: 会話モード（育つ地図入力）※非破壊で追加 ===== -->
+  <section id="step-conversation" class="step-hidden">
+  <style>
+    #step-conversation{--cmInk:#1f2733;--cmSub:#6b7686;--cmLine:#e6eaf0;--cmBlue:#2f6df0;--cmBlueBg:#e9f1ff;
+      --cmGreen:#1f9d6b;--cmGreenBg:#e6f6ef;--cmAmber:#c9881e;--cmAmberBg:#fdf4e3;}
+    #step-conversation .cm-wrap{max-width:480px;margin:0 auto;background:#fff;border:1px solid var(--cmLine);
+      border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(20,30,50,.06);display:flex;flex-direction:column;}
+    #step-conversation .cm-map{background:linear-gradient(180deg,#f7faff,#eef4ff);border-bottom:1px solid var(--cmLine);padding:12px 14px 14px;}
+    #step-conversation .cm-map-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px;}
+    #step-conversation .cm-title{font-size:13px;font-weight:700;color:var(--cmSub);white-space:nowrap;}
+    #step-conversation .cm-title b{color:var(--cmInk);}
+    #step-conversation .cm-meters{display:flex;gap:8px;}
+    #step-conversation .cm-meter{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--cmSub);}
+    #step-conversation .cm-bar{width:50px;height:7px;border-radius:4px;background:#dde4ee;overflow:hidden;}
+    #step-conversation .cm-fill{height:100%;width:0;border-radius:4px;transition:width .5s cubic-bezier(.2,.8,.2,1);}
+    #step-conversation .cm-prog{background:var(--cmBlue);}
+    #step-conversation .cm-tidy{background:var(--cmGreen);}
+    #step-conversation .cm-timeline{position:relative;height:96px;margin-top:8px;}
+    #step-conversation .cm-axis{position:absolute;left:0;right:0;top:54px;height:2px;background:#cbd6e6;}
+    #step-conversation .cm-tick{position:absolute;top:48px;transform:translateX(-50%);font-size:9px;color:#9aa7bb;}
+    #step-conversation .cm-tick:before{content:'';position:absolute;left:50%;top:-4px;width:1px;height:6px;background:#cbd6e6;}
+    #step-conversation .cm-person{position:absolute;top:18px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;transition:left .5s cubic-bezier(.2,.8,.2,1);}
+    #step-conversation .cm-dot{width:26px;height:26px;border-radius:50%;background:#4f86f7;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;box-shadow:0 2px 6px rgba(40,90,200,.25);}
+    #step-conversation .cm-lbl{font-size:9px;color:var(--cmSub);white-space:nowrap;}
+    #step-conversation .cm-lifebar{position:absolute;top:53px;height:4px;border-radius:3px;background:linear-gradient(90deg,#4f86f7,#9cc0ff);opacity:.5;}
+    #step-conversation .cm-pin{position:absolute;transform:translateX(-50%);top:30px;display:flex;flex-direction:column;align-items:center;gap:2px;}
+    #step-conversation .cm-pin .cm-ico{width:22px;height:22px;border-radius:7px;background:#fff;border:1.5px solid var(--cmBlue);display:flex;align-items:center;justify-content:center;font-size:12px;animation:cmPop .5s cubic-bezier(.2,1.4,.4,1);}
+    #step-conversation .cm-pin .cm-pl{font-size:8.5px;color:var(--cmSub);white-space:nowrap;}
+    #step-conversation .cm-pin.cm-kari .cm-ico{border-style:dashed;border-color:var(--cmAmber);background:var(--cmAmberBg);}
+    #step-conversation .cm-areas{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+    #step-conversation .cm-area{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;border:1.5px solid #d6deea;color:#9aa7bb;background:#fff;display:flex;align-items:center;gap:4px;transition:all .4s;}
+    #step-conversation .cm-area .cm-s{width:7px;height:7px;border-radius:50%;background:#cdd6e3;}
+    #step-conversation .cm-area.cm-kari{border-style:dashed;border-color:var(--cmAmber);color:var(--cmAmber);background:var(--cmAmberBg);}
+    #step-conversation .cm-area.cm-kari .cm-s{background:var(--cmAmber);}
+    #step-conversation .cm-area.cm-ok{border-color:var(--cmGreen);color:var(--cmGreen);background:var(--cmGreenBg);}
+    #step-conversation .cm-area.cm-ok .cm-s{background:var(--cmGreen);}
+    #step-conversation .cm-area.cm-lock{border-color:#c3a3e8;color:#8a5fc0;background:#f5eefe;}
+    #step-conversation .cm-area.cm-flash{animation:cmFlash .6s;}
+    @keyframes cmPop{0%{transform:scale(.4);}60%{transform:scale(1.15);}100%{transform:scale(1);}}
+    @keyframes cmFlash{0%{box-shadow:0 0 0 0 rgba(31,157,107,.5);}100%{box-shadow:0 0 0 12px rgba(31,157,107,0);}}
+    #step-conversation .cm-chat{padding:16px 14px 8px;display:flex;flex-direction:column;gap:12px;min-height:180px;}
+    #step-conversation .cm-row{display:flex;gap:8px;align-items:flex-end;}
+    #step-conversation .cm-row.cm-me{justify-content:flex-end;}
+    #step-conversation .cm-ava{width:30px;height:30px;border-radius:50%;background:var(--cmBlueBg);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:15px;}
+    #step-conversation .cm-bub{max-width:76%;padding:9px 13px;border-radius:14px;font-size:14px;animation:cmRise .35s ease;line-height:1.6;}
+    #step-conversation .cm-bub.cm-nav{background:#f1f5fb;border-bottom-left-radius:4px;color:var(--cmInk);}
+    #step-conversation .cm-bub.cm-me{background:var(--cmBlue);color:#fff;border-bottom-right-radius:4px;}
+    #step-conversation .cm-kari-note{display:block;margin-top:6px;font-size:11.5px;color:var(--cmAmber);background:var(--cmAmberBg);padding:5px 8px;border-radius:8px;}
+    @keyframes cmRise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+    #step-conversation .cm-input{border-top:1px solid var(--cmLine);padding:11px 14px;background:#fff;}
+    #step-conversation .cm-choices{display:flex;flex-wrap:wrap;gap:8px;}
+    #step-conversation .cm-chip{border:1.5px solid #d3dcea;background:#fff;color:var(--cmInk);font-size:14px;font-weight:600;padding:9px 15px;border-radius:22px;cursor:pointer;transition:.15s;}
+    #step-conversation .cm-chip:hover{border-color:var(--cmBlue);color:var(--cmBlue);background:var(--cmBlueBg);}
+    #step-conversation .cm-numwrap{display:flex;gap:8px;align-items:center;}
+    #step-conversation .cm-numwrap input{flex:1;font-size:18px;font-weight:700;text-align:right;padding:9px 12px;border:1.5px solid #d3dcea;border-radius:12px;width:100%;}
+    #step-conversation .cm-unit{font-size:14px;color:var(--cmSub);}
+    #step-conversation .cm-send{background:var(--cmBlue);color:#fff;border:none;font-size:15px;font-weight:700;padding:10px 18px;border-radius:12px;cursor:pointer;}
+    #step-conversation .cm-skip{display:block;margin:7px auto 0;background:none;border:none;color:var(--cmSub);font-size:11.5px;text-decoration:underline;cursor:pointer;}
+    #step-conversation .cm-hint{font-size:11px;color:var(--cmSub);margin-top:7px;text-align:center;}
+    #step-conversation .cm-hint b{color:var(--cmAmber);}
+    #step-conversation .cm-footer{display:flex;gap:8px;padding:9px 14px 14px;background:#fff;}
+    #step-conversation .cm-ghost{flex:1;text-align:center;font-size:12.5px;font-weight:700;padding:10px;border-radius:12px;border:1.5px solid #d3dcea;color:var(--cmSub);cursor:pointer;background:#fff;}
+    #step-conversation .cm-ghost.cm-accent{border-color:var(--cmBlue);color:#fff;background:var(--cmBlue);}
+    #step-conversation .cm-done{padding:18px 18px 8px;text-align:center;}
+    #step-conversation .cm-done .cm-big{font-size:40px;font-weight:800;color:var(--cmGreen);line-height:1;}
+    #step-conversation .cm-done h3{font-size:18px;margin:6px 0;color:var(--cmInk);border:none;padding:0;}
+    #step-conversation .cm-done p{font-size:13px;color:var(--cmSub);}
+    #step-conversation .cm-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);background:var(--cmInk);color:#fff;font-size:12.5px;font-weight:700;padding:8px 16px;border-radius:20px;opacity:0;pointer-events:none;transition:.35s;z-index:60;}
+    #step-conversation .cm-toast.cm-show{opacity:1;transform:translateX(-50%) translateY(0);}
+  </style>
+    <div class="cm-wrap">
+      <div class="cm-map">
+        <div class="cm-map-head">
+          <div class="cm-title">🗺️ <b>あなたのお金の地図</b></div>
+          <div class="cm-meters">
+            <div class="cm-meter">📝<div class="cm-bar"><div class="cm-fill cm-prog" id="cm-fProg"></div></div><span id="cm-vProg">0/10</span></div>
+            <div class="cm-meter">✨<div class="cm-bar"><div class="cm-fill cm-tidy" id="cm-fTidy"></div></div><span id="cm-vTidy">0/6</span></div>
+          </div>
+        </div>
+        <div class="cm-timeline" id="cm-timeline">
+          <div class="cm-axis"></div>
+          <div class="cm-lifebar" id="cm-lifebar" style="left:8%;width:0;"></div>
+          <div class="cm-person" id="cm-person" style="left:10%;"><div class="cm-dot">🙂</div><div class="cm-lbl" id="cm-personLbl">あなた</div></div>
+        </div>
+        <div class="cm-areas" id="cm-areas"></div>
+      </div>
+      <div class="cm-chat" id="cm-chat"></div>
+      <div class="cm-input" id="cm-inputArea"></div>
+      <div class="cm-footer" id="cm-footer" style="display:none;">
+        <button class="cm-ghost cm-accent" id="cm-toResult">診断結果を見る ▸</button>
+        <button class="cm-ghost" id="cm-toFull">全部まとめて入力</button>
+      </div>
+      <div class="cm-toast" id="cm-toast"></div>
+    </div>
+  </section>
+
   <!-- ===== Step 2: 入力フォーム ===== -->
   <section id="step-input" class="step-hidden">
 
@@ -930,7 +1026,9 @@ $('#agree-check').addEventListener('change', (e) => {
 
 $('#agree-btn').addEventListener('click', () => {
   $('#step-disclaimer').classList.add('step-hidden');
-  $('#step-input').classList.remove('step-hidden');
+  // 既定の入口を「会話モード」に。詳細フォームは会話内の「全部まとめて入力」から到達可
+  $('#step-conversation').classList.remove('step-hidden');
+  if (window.cmBoot) window.cmBoot();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
@@ -2842,6 +2940,284 @@ function riskScoreLabel(score) {
   if (score <= 2) return '低め';
   return '中央';
 }
+</script>
+
+<!-- ====== 会話モード エンジン（非破壊・既存diagnose/collectInput/saveToStorageを再利用） ====== -->
+<script>
+(function(){
+  'use strict';
+  const root = document.getElementById('step-conversation');
+  if (!root) return;
+  const $$ = (id) => document.getElementById(id);
+
+  /* ===== 地図アプリ(asset_map_app)からの移植（複製方式・本プロジェクトの既定） ===== */
+  const PAYWALL = { areas:{ defense:'free',cashflow:'free',coverage:'free',allocation:'free',housing:'free',lifeevent:'free',exit:'paid' } };
+  function readLicense(){ try { return !!(JSON.parse(localStorage.getItem('smartside_license_v1')||'null')||{}).active; } catch(e){ return false; } }
+  function resolveLock(scope, key, baseStatus){
+    const entitled = readLicense();
+    let plan = (scope==='area') ? (PAYWALL.areas[key]||'free') : 'free';
+    if (plan==='paid' && !entitled) return 'locked';
+    return baseStatus;
+  }
+  function build7Areas(raw, dx){
+    const nej = dx.nejireList || [];
+    const hasNej = (kw) => nej.some(n => kw.some(k => (n.title || '').includes(k)));
+    const twistFor = (kw) => { const n = nej.find(x => kw.some(k => (x.title || '').includes(k))); return n ? n.finding : null; };
+    const man = (n) => Math.round(n/10000).toLocaleString('ja-JP');
+    const months = raw.expense > 0 ? Math.round(raw.bank / raw.expense) : 0;
+    const insMonthly = (raw.gakushi==='yes'?(raw.gakushiMonthly||0):0)+(raw.hengaku==='yes'?(raw.hengakuMonthly||0):0)+(raw.kojinNenkin==='yes'?(raw.kojinNenkinMonthly||0):0)+(raw.gaikaHoken==='yes'?(raw.gaikaHokenMonthly||0):0);
+    const insRatio = raw.income > 0 ? insMonthly / raw.income : 0;
+    const A = [];
+    { let st = (raw.bank===0 && raw.expense===0) ? 'empty' : dx.bankSufficient ? 'filled' : 'attention';
+      const smy = st==='empty' ? '銀行貯金が未入力' : `生活防衛資金 ${months}ヶ月分（目安${dx.emergencyMonths}ヶ月）`;
+      A.push({ key:'defense', cat:'defense', icon:'🛡', name:'守りの土台', status:st, smy }); }
+    { const empty = raw.income===0 && raw.expense===0;
+      const insHeavy = insMonthly>0 && insRatio>0.10;
+      let st = empty ? 'empty' : (dx.monthlySurplus<0 || insHeavy) ? 'attention' : 'filled';
+      const smy = empty ? '収支が未入力' : `月の余り ${dx.monthlySurplus>=0?'+':''}${(dx.monthlySurplus/10000).toFixed(1)}万円`;
+      A.push({ key:'cashflow', cat:'cashflow', icon:'💰', name:'家計CF', status:st, smy }); }
+    { const anyIns = raw.gakushi==='yes'||raw.hengaku==='yes'||raw.kojinNenkin==='yes'||raw.gaikaHoken==='yes';
+      const att = hasNej(['変額','学資','個人年金','外貨','保険料']);
+      let st = att ? 'attention' : 'filled';
+      const smy = att ? '保険の見直し余地あり' : (anyIns ? '保険は入力済み・大きな見直しなし' : '見直すべき保険なし');
+      A.push({ key:'coverage', cat:'coverage', icon:'🩹', name:'保障', status:st, smy }); }
+    { const noInvest = raw.nisa!=='active' && raw.toushinShin==='none' && (raw.crypto||0)===0 && (raw.dcBalance||0)===0 && (raw.dcMonthly||0)===0;
+      const att = hasNej(['暗号資産','銀行窓販']);
+      let st = noInvest ? 'empty' : att ? 'attention' : 'filled';
+      const al = dx.allocation;
+      const smy = noInvest ? '未入力（資産配分が描けていません）' : att ? '投資商品に見直し余地あり' : `株式${al.stocksPct}% / 現金${al.cashPct}%`;
+      A.push({ key:'allocation', cat:'allocation', icon:'📊', name:'投資の型', status:st, smy }); }
+    { A.push({ key:'exit', cat:'exit', icon:'🚪', name:'出口・取り崩し', status:'filled', smy:'取り崩し順序と「寿命まで持つか」の精密検査' }); }
+    { const empty = raw.housing==='rent' && (raw.housingPlan||0)===0;
+      const att = hasNej(['ローン','維持費','返済']);
+      let st = empty ? 'empty' : att ? 'attention' : 'filled';
+      const smy = empty ? '賃貸・購入予定なし' : raw.housing==='loan' ? '住宅ローン あり' : raw.housing==='owned' ? '持ち家（ローン無）' : '住まいの情報あり';
+      A.push({ key:'housing', cat:'housing', icon:'🏠', name:'住まい', status:st, smy }); }
+    { const nonMarker = (dx.lifeTimeline||[]).filter(e => !e.marker);
+      const empty = nonMarker.length === 0;
+      const near = nonMarker.some(e => Math.abs(e.age - raw.retireAge) <= 3);
+      let st = empty ? 'empty' : near ? 'attention' : 'filled';
+      const smy = empty ? 'ライフイベント未入力' : near ? `大型出費と退職が近接` : `イベント ${nonMarker.length}件`;
+      A.push({ key:'lifeevent', cat:'lifeevent', icon:'📅', name:'ライフイベント', status:st, smy }); }
+    A.forEach(a => { a.status = resolveLock('area', a.key, a.status); });
+    return A;
+  }
+
+  /* ===== 仮置きテーブル（未回答フィールドのプレビュー表示専用・保存には混ぜない）
+     ペルソナ＝二人以上勤労者世帯（夫婦）。数値は2024年の公的統計に基づく。
+       income      : 家計調査2024 二人以上勤労者世帯 可処分所得 月522,569円 → 52万に丸め（平均値）
+       expense     : 家計調査2024 二人以上勤労者世帯 消費支出 月約33万円（可処分所得×平均消費性向約63%で算出。総数の消費支出は300,243円）
+       bank        : 金融広報中央委員会(J-FLEC)2024 二人以上世帯 金融資産 中央値350万円
+       housingPlan : フラット35利用者調査2024 建売住宅 全国平均3,826万円 → 3,800万に丸め
+       rentMonthly : 住宅・土地統計2023 民営借家の代表値（夫婦の賃貸として8万に据置。民営非木造の平均は68,548円）
+       nisaMonthly : 投資実施者の平均積立は約5万だが自己選択バイアスのため保守的に3万に据置
+       age/retireAge/loanMonthly : 代表値（個別統計の特定値ではない） ===== */
+  const M = { age:35, job:'employee', family:'married_no_kids', housing:'rent',
+    rentMonthly:80000, loanMonthly:90000, income:520000, expense:330000, bank:3500000,
+    nisaMonthly:30000, retireAge:65, housingPlan:38000000 };
+
+  /* ===== フォーム書き込みヘルパ（既存フォームDOMに実値をセット＝非破壊で引継ぎ可能に） ===== */
+  function setVal(id,v){ const el=$$(id); if(el){ el.value=v; el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true})); } }
+  function setRadio(name,v){ const el=document.querySelector(`input[name="${name}"][value="${v}"]`); if(el){ el.checked=true; el.dispatchEvent(new Event('change',{bubbles:true})); } }
+  function toYen(v){ const n=parseFloat(String(v).replace(/,/g,'')); return Number.isFinite(n)?Math.round(n*10000):0; }
+  function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  /* ===== 10問定義 ===== */
+  const Q = [
+    {key:'age', nav:'まずは、今おいくつ？', type:'num', unit:'才', median:M.age, apply(v){ setVal('age', v); }},
+    {key:'job', nav:'お仕事は？', type:'choice', median:'会社員',
+      opts:[['会社員','employee'],['公務員','public'],['自営業','self'],['主婦/主夫','housewife'],['その他','other']],
+      apply(v){ setVal('job', v); }},
+    {key:'family', nav:'ご家族の構成は？', type:'choice', median:'夫婦',
+      opts:[['独身','single'],['夫婦','married_no_kids'],['子どもあり','with_dependents']],
+      apply(v){ setRadio('family', v); if(v==='with_dependents'){ setVal('kidCount','1'); if(typeof syncDynamicSections==='function') syncDynamicSections(); } }},
+    {key:'housing', nav:'お住まいは？', type:'choice', median:'賃貸',
+      opts:[['賃貸','rent'],['持ち家(ローン)','loan'],['持ち家(完済)','owned'],['実家・社宅','family']],
+      apply(v){ setRadio('housing', v); if(v==='rent') setVal('rentMonthly', M.rentMonthly); else if(v==='loan'){ setVal('loanMonthly', M.loanMonthly); setVal('loanYears','30'); } }},
+    {key:'income', nav:'手取りの月収は、だいたい？', type:'num', unit:'万円', median:Math.round(M.income/10000), apply(v){ setVal('income', toYen(v)); }},
+    {key:'expense', nav:'毎月の生活費は？', type:'num', unit:'万円', median:Math.round(M.expense/10000), apply(v){ setVal('expense', toYen(v)); }},
+    {key:'bank', nav:'今の貯金は、ざっくり？', type:'num', unit:'万円', median:Math.round(M.bank/10000), apply(v){ setVal('bank', toYen(v)); }},
+    {key:'invest', nav:'毎月の積立・投資は？（NISA等ぜんぶ合わせて）', type:'num', unit:'万円', median:Math.round(M.nisaMonthly/10000),
+      apply(v){ const y=toYen(v); if(y>0){ setRadio('nisa','active'); setVal('nisaMonthly', y); } else { setRadio('nisa','none'); setVal('nisaMonthly','0'); } }},
+    {key:'retire', nav:'何才まで働く予定？', type:'num', unit:'才', median:M.retireAge, apply(v){ setVal('retireAge', v); }},
+    {key:'bigplan', nav:'この先、大きな予定は？', type:'choice', median:'特になし',
+      opts:[['住宅購入','house'],['教育費','edu'],['介護の備え','care'],['特になし','none']],
+      apply(v){ if(v==='house'){ setVal('housingPlan', String(M.housingPlan)); setVal('housingPlanYears','10'); } else if(v==='edu'){ setVal('otherShortTerm','3000000'); } else if(v==='care'){ setVal('careMonthly','100000'); setVal('careYears','5'); setVal('careStartYears','15'); } }},
+  ];
+
+  /* ===== どのエリアが「実回答で確定」するか（仮置きを整いスコアから除外するマスク） ===== */
+  const AREA_REQUIRES = {
+    defense:['bank','expense'], cashflow:['income','expense'], coverage:['__never__'],
+    allocation:['invest'], exit:null, housing:['housing'], lifeevent:['bigplan'],
+  };
+
+  const state = { idx:0, done:false, answered:new Set() };
+
+  /* ===== プレビュー用 raw：実回答(フォーム) ＋ 未回答は中央値で仮置き（保存には混ぜない） ===== */
+  function buildPreviewRaw(){
+    const raw = (typeof collectInput==='function') ? collectInput() : {};
+    const a = state.answered;
+    if(!a.has('age')) raw.age = M.age;
+    if(!a.has('job')) raw.job = M.job;
+    if(!a.has('family')){ raw.family = M.family; raw.kidCount = 0; raw.kidsAge=[]; raw.kidsEdu=[]; }
+    if(!a.has('housing')){ raw.housing='rent'; raw.rentMonthly=M.rentMonthly; }
+    if(!a.has('income')) raw.income = M.income;
+    if(!a.has('expense')) raw.expense = M.expense;
+    if(!a.has('bank')) raw.bank = M.bank;
+    if(!a.has('invest')){ raw.nisa='active'; raw.nisaMonthly=M.nisaMonthly; }
+    if(!a.has('retire')) raw.retireAge = M.retireAge;
+    if(!a.has('bigplan')){ raw.housingPlan = M.housingPlan; raw.housingPlanYears=10; }
+    return raw;
+  }
+
+  /* ===== 地図描画 ===== */
+  function ageToPct(age, start){ const end=92; const x=Math.max(start,Math.min(end,age)); return 8 + (x-start)/(end-start)*84; }
+  function renderTimeline(raw){
+    const tl = $$('cm-timeline');
+    tl.querySelectorAll('.cm-tick,.cm-pin').forEach(e=>e.remove());
+    const start = Number(raw.age)||35;
+    [start,50,65,80,92].forEach(a=>{ if(a<start) return; const t=document.createElement('div'); t.className='cm-tick'; t.style.left=ageToPct(a,start)+'%'; t.textContent=(a===92?'90+':a+'才'); tl.appendChild(t); });
+    $$('cm-person').style.left=ageToPct(start,start)+'%';
+    $$('cm-personLbl').textContent = `${start}才・${jobLabel(raw.job)}`;
+    const lb=$$('cm-lifebar'); lb.style.left=ageToPct(start,start)+'%'; lb.style.width=(ageToPct(92,start)-ageToPct(start,start))+'%';
+    const a=state.answered;
+    const pins=[];
+    pins.push({age:Number(raw.retireAge)||65, ico:'🏖️', label:'退職', kari:!a.has('retire')});
+    pins.push({age:Number(raw.pensionStartAge)||65, ico:'📮', label:'年金', kari:true});
+    if((raw.housingPlan||0)>0) pins.push({age:start+(Number(raw.housingPlanYears)||10), ico:'🏠', label:'住宅', kari:!a.has('bigplan')});
+    if((raw.otherShortTerm||0)>0) pins.push({age:start+5, ico:'🎓', label:'教育', kari:!a.has('bigplan')});
+    if((raw.careMonthly||0)>0) pins.push({age:start+(Number(raw.careStartYears)||15), ico:'🩺', label:'介護', kari:!a.has('bigplan')});
+    pins.forEach(p=>{ const el=document.createElement('div'); el.className='cm-pin'+(p.kari?' cm-kari':''); el.style.left=ageToPct(p.age,start)+'%';
+      el.innerHTML=`<div class="cm-ico">${p.ico}</div><div class="cm-pl">${p.label}${p.kari?' 仮':''}</div>`; tl.appendChild(el); });
+  }
+  function jobLabel(j){ return ({employee:'会社員',public:'公務員',self:'自営業',housewife:'主婦/主夫',other:'その他'})[j]||'会社員'; }
+
+  function computeAreaView(raw){
+    const dx = diagnose(raw);
+    const areas = build7Areas(raw, dx);
+    const a = state.answered;
+    return areas.map(ar=>{
+      if(ar.status==='locked') return {...ar, view:'lock', counted:false};
+      const req = AREA_REQUIRES[ar.key];
+      const confirmed = req && req.every(k=> a.has(k));
+      if(!confirmed) return {...ar, view:'kari', counted:false};
+      if(ar.status==='empty') return {...ar, view:'kari', counted:false};
+      return {...ar, view:'ok', counted:true};
+    });
+  }
+  function renderAreas(view, flashKey){
+    const wrap=$$('cm-areas'); wrap.innerHTML='';
+    view.forEach(a=>{
+      const cls = a.view==='lock'?'cm-lock':a.view==='ok'?'cm-ok':'cm-kari';
+      const suffix = a.view==='lock'?' 🔒':a.view==='ok'?'':' 仮';
+      const el=document.createElement('div'); el.className='cm-area '+cls+(flashKey===a.key?' cm-flash':'');
+      el.innerHTML=`<span class="cm-s"></span>${a.name}${suffix}`; wrap.appendChild(el);
+    });
+  }
+  function renderMeters(view){
+    const prog=state.answered.size;
+    const nonLocked=view.filter(a=>a.view!=='lock');
+    const tidy=nonLocked.filter(a=>a.counted).length;
+    const denom=nonLocked.length;
+    $$('cm-fProg').style.width=(prog/10*100)+'%'; $$('cm-vProg').textContent=prog+'/10';
+    $$('cm-fTidy').style.width=(denom?tidy/denom*100:0)+'%'; $$('cm-vTidy').textContent=tidy+'/'+denom;
+    return {tidy, denom};
+  }
+  let lastView=[];
+  function rerender(flashKey){
+    const raw=buildPreviewRaw();
+    renderTimeline(raw);
+    const view=computeAreaView(raw);
+    renderAreas(view, flashKey);
+    const meters=renderMeters(view);
+    lastView=view;
+    return meters;
+  }
+
+  /* ===== 会話進行 ===== */
+  function addBub(side, html){
+    const chat=$$('cm-chat'); const row=document.createElement('div'); row.className='cm-row'+(side==='me'?' cm-me':'');
+    row.innerHTML = side==='me' ? `<div class="cm-bub cm-me">${html}</div>` : `<div class="cm-ava">🧭</div><div class="cm-bub cm-nav">${html}</div>`;
+    chat.appendChild(row); chat.scrollTop=chat.scrollHeight;
+  }
+  function toast(msg){ const t=$$('cm-toast'); t.textContent=msg; t.classList.add('cm-show'); setTimeout(()=>t.classList.remove('cm-show'),1500); }
+
+  function askCurrent(){
+    const q=Q[state.idx];
+    if(!q) return finish();
+    const med = q.type==='num' ? `${q.median}${q.unit}` : q.median;
+    addBub('nav', `${q.nav}<span class="cm-kari-note">いまは「平均的な人」の値（${med}）で仮置き中。あなたは？</span>`);
+    renderInput(q);
+  }
+  function renderInput(q){
+    const ia=$$('cm-inputArea');
+    if(q.type==='choice'){
+      ia.innerHTML=`<div class="cm-choices">${q.opts.map(o=>`<button type="button" class="cm-chip" data-v="${o[1]}">${o[0]}</button>`).join('')}</div>`+
+        `<button type="button" class="cm-skip" data-skip="1">この質問はスキップ（平均のまま）</button>`+
+        `<div class="cm-hint">未入力でも進めます（その項目は<b>平均値で仮置き</b>のまま）</div>`;
+      ia.querySelectorAll('.cm-chip').forEach(b=> b.addEventListener('click', ()=> answer(b.getAttribute('data-v'), b.textContent)));
+      ia.querySelector('[data-skip]').addEventListener('click', ()=> skip());
+    } else {
+      ia.innerHTML=`<div class="cm-numwrap"><input id="cm-numIn" type="text" inputmode="numeric" value="${q.median}"><span class="cm-unit">${q.unit}</span><button type="button" class="cm-send" id="cm-sendBtn">これで</button></div>`+
+        `<button type="button" class="cm-skip" data-skip="1">この質問はスキップ（平均のまま）</button>`+
+        `<div class="cm-hint">「平均」を直すほど、<b>整いスコア</b>が上がります</div>`;
+      $$('cm-sendBtn').addEventListener('click', ()=> answer($$('cm-numIn').value));
+      ia.querySelector('[data-skip]').addEventListener('click', ()=> skip());  // 数値質問でもスキップを有効化（choiceブランチと同じ）
+      const n=$$('cm-numIn'); if(n){ setTimeout(()=>{ n.focus(); n.select&&n.select(); },50); }
+    }
+  }
+  function answer(val, label){
+    const q=Q[state.idx];
+    q.apply(val);
+    state.answered.add(q.key);
+    addBub('me', label || `${esc(val)}${q.unit}`);
+    // 答えで新たに整ったエリアを検出
+    const before = lastView.filter(a=>a.counted).map(a=>a.key);
+    const meters = rerender();
+    const after = lastView.filter(a=>a.counted);
+    const newly = after.find(a=> !before.includes(a.key));
+    if(newly){ renderAreas(lastView, newly.key); toast(`✨「${newly.name}」が整いました！`); }
+    state.idx++;
+    setTimeout(askCurrent, 520);
+  }
+  function skip(){
+    const q=Q[state.idx];
+    addBub('me', '（平均のまま）');
+    state.idx++;
+    setTimeout(askCurrent, 320);
+  }
+  function finish(){
+    if(state.done) return; state.done=true;
+    $$('cm-inputArea').innerHTML='';
+    $$('cm-footer').style.display='flex';
+    const view=lastView.length?lastView:computeAreaView(buildPreviewRaw());
+    const nonLocked=view.filter(a=>a.view!=='lock'); const tidy=nonLocked.filter(a=>a.counted).length; const denom=nonLocked.length;
+    addBub('nav', `おつかれさま！会話だけで<b>あなたの地図</b>ができたよ🎉`);
+    const chat=$$('cm-chat'); const d=document.createElement('div'); d.className='cm-done';
+    const coverageKari = view.some(a=>a.key==='coverage' && a.view!=='ok');
+    d.innerHTML=`<div class="cm-big">整い ${tidy}/${denom}</div><h3>地図が立ち上がりました</h3>`+
+      (coverageKari?`<p>あと少し、<b>保障エリア</b>が「仮」のまま。<br>保険をちょっと見れば、ここも整います。</p>`:`<p>しっかり整いました。さらに詳しく詰めることもできます。</p>`);
+    chat.appendChild(d); chat.scrollTop=chat.scrollHeight; toast('🎉 地図ができた！');
+  }
+
+  /* ===== 完了後の導線 ===== */
+  $$('cm-toResult')?.addEventListener('click', ()=>{
+    root.classList.add('step-hidden');
+    const btn=document.getElementById('diagnose-btn'); if(btn) btn.click();  // 既存フロー：collectInput→保存→診断結果（中央値は混ざらない）
+  });
+  $$('cm-toFull')?.addEventListener('click', ()=>{
+    root.classList.add('step-hidden');
+    const si=document.getElementById('step-input'); if(si){ si.classList.remove('step-hidden'); window.scrollTo({top:0,behavior:'smooth'}); }
+  });
+
+  /* ===== 起動（agree-btnから呼ばれる） ===== */
+  window.cmBoot = function(){
+    if(window.__cmBooted) { return; } window.__cmBooted = true;
+    rerender();
+    addBub('nav', `こんにちは！<br><b>10問</b>に答えるだけで、あなたの「お金の地図」を立ち上げます。<br>まずは平均的な人の地図を仮置きしておいたよ👆 ここから直していこう。`);
+    setTimeout(askCurrent, 700);
+  };
+})();
 </script>
 
 </body>
