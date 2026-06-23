@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
-<title>資産形成 健康診断 | Sprint 0</title>
+<title>資産形成 健康診断</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -38,7 +38,6 @@
       資産形成 健康診断
     </h1>
     <p class="text-sm text-slate-600 mt-2">あなたの今の資産形成、ちょっとだけ見直してみませんか？</p>
-    <p class="text-xs text-slate-500 mt-1">Sprint 0（最小版）／ 2026-05-23</p>
   </header>
 
   <!-- ===== Step 1: ディスクレーマー同意 ===== -->
@@ -1291,7 +1290,7 @@
     <div class="bg-amber-50 border-2 border-amber-300 rounded-lg p-4 mt-6 no-print">
       <p class="font-bold text-amber-800 text-sm mb-2">🔍 詳細フォームで追加検討できること</p>
       <ul class="text-xs text-slate-700 ml-1 space-y-1.5">
-        <li>① <strong>ねじれ判定 Rule 1-14</strong>：変額/学資/個人年金/外貨建ての見直し効果を金額で算出（一般的な解約 → NISA 振替で月数万円〜・YMYL慎重に表示）</li>
+        <li>① <strong>ねじれ判定 Rule 1-14</strong>：変額/学資/個人年金/外貨建ての見直し効果を金額で算出（一般的な解約 → NISA 振替で月数万円〜・保守的に表示）</li>
         <li>② <strong>4パターン比較</strong>：A.今のまま / B.保険だけ見直し / C.預金有効活用 / D.両方 の差額を可視化</li>
         <li>③ <strong>資産配分ドーナツ</strong>：現金/株式/個人国債/暗号資産 の比率＋年齢別の参考配分（リスク資産の内訳を3項目並列で表示）</li>
         <li>④ <strong>住宅維持費 1% ルール</strong>：固定資産税・修繕・火災保険の見落としチェック</li>
@@ -1326,7 +1325,7 @@
   </section>
 
   <footer class="text-xs text-slate-400 text-center mt-12 pb-8">
-    Sprint 0 — 2026-05-23 / west_ax_company
+    資産形成 健康診断
   </footer>
 </div>
 
@@ -3534,7 +3533,7 @@ function renderCashflowSummaryLite(d, result) {
   //   会話モードで本人に聞いていないため、注釈で明示＋詳細フォーム誘導ボタンを追加。
   const hasShortTerm = (result.shortTermTotal || 0) > 0;
   const shortTermNote = hasShortTerm
-    ? `月支出 × ${result.emergencyMonths}ヶ月 + 5年以内の想定出費 <span class="text-amber-700">※簡易版では裏で典型値を仮置き</span>`
+    ? `月支出 × ${result.emergencyMonths}ヶ月 + 5年以内の想定出費 <span class="text-amber-700">※簡易版では一般的な平均値で表示</span>`
     : `月支出 × ${result.emergencyMonths}ヶ月`;
   return `
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">

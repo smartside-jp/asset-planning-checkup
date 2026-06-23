@@ -2419,7 +2419,7 @@ function exitPanelHTML(ex, scenarioKey = 'standard'){
     + `<div class="box"><div class="k">公的年金（月・目安）</div><div class="v">${m1(p.pensionMan)}<small>万円/月</small></div></div>`
     + `</div>`
     + `<p class="note">※ 毎月の取り崩し額（${m1(p.monthlyWithdrawMan)}万円/月）＝「リタイア後の生活費 − 公的年金」の不足分です。資産の一定％を取り崩す固定ルール（いわゆる4%ルール等）ではなく、実際の不足額で計算しています。</p>`
-    + (ex.pensionAssumed ? `<p class="note">※ 年金額が未入力のため、いまは<b>手取りの約50%</b>で仮置きしています。<b>ねんきん定期便の見込額</b>で更新すると、より正確になります。</p>` : '')
+    + (ex.pensionAssumed ? `<p class="note">※ 年金額が未入力のため、いまは<b>手取りの約50%</b>で計算しています。<b>ねんきん定期便の見込額</b>で更新すると、より正確になります。</p>` : '')
     + (ex.hasRetireBonus ? `<p class="note">※ 退職金は<b>税引き後の見込額</b>での入力を推奨します（実際は退職所得控除で税負担が軽くなります）。</p>` : '')
     + `</div>`;
   // ④ 年金 繰上げ繰下げ表
