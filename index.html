@@ -11,6 +11,9 @@
   html { color-scheme: light only; }
   body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", sans-serif; }
   .step-hidden { display: none; }
+  /* 2026-06-24：カード単位モード。地図の穴あきカードから来たとき、そのカードに関係ない入力群を隠す。
+     !important で Tailwind / インライン display / step-hidden の上書きを確実にする（表示制御のみ＝計算は不変）。 */
+  .card-hidden { display: none !important; }
 
   @media print {
     body { background-color: white !important; }
@@ -177,6 +180,60 @@
     #step-conversation .cm-done p{font-size:13px;color:var(--cmSub);}
     #step-conversation .cm-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);background:var(--cmInk);color:#fff;font-size:12.5px;font-weight:700;padding:8px 16px;border-radius:20px;opacity:0;pointer-events:none;transition:.35s;z-index:60;}
     #step-conversation .cm-toast.cm-show{opacity:1;transform:translateX(-50%) translateY(0);}
+    /* ====== 入力数値の確認画面 (2026-06-25)：会話→簡易結果 の間 ====== */
+    #step-conversation{--cmAuto:#7c5cd3;--cmAutoBg:#f1ecfb;--cmNone:#9aa7bb;--cmNoneBg:#f3f5f9;}
+    #step-conversation .cmc-confirm{padding:14px;background:#f6f8fc;border-top:1px solid var(--cmLine);}
+    #step-conversation .cmc-head{background:#fff;border:1px solid var(--cmLine);border-radius:12px;padding:14px 16px;}
+    #step-conversation .cmc-head h2{font-size:16px;font-weight:800;margin-bottom:4px;color:var(--cmInk);border:none;padding:0;}
+    #step-conversation .cmc-head .cmc-lead{color:var(--cmSub);font-size:12.5px;line-height:1.7;}
+    #step-conversation .cmc-head .cmc-lead b{color:var(--cmInk);}
+    #step-conversation .cmc-legend{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+    #step-conversation .cmc-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:14px;border:1.5px solid var(--cmLine);background:#fff;color:var(--cmSub);}
+    #step-conversation .cmc-badge .cmc-dot{width:6px;height:6px;border-radius:50%;background:var(--cmSub);}
+    #step-conversation .cmc-b-ans{border-color:var(--cmGreen);color:var(--cmGreen);background:var(--cmGreenBg);}
+    #step-conversation .cmc-b-ans .cmc-dot{background:var(--cmGreen);}
+    #step-conversation .cmc-b-kari{border-style:dashed;border-color:var(--cmAmber);color:var(--cmAmber);background:var(--cmAmberBg);}
+    #step-conversation .cmc-b-kari .cmc-dot{background:var(--cmAmber);}
+    #step-conversation .cmc-b-auto{border-color:var(--cmAuto);color:var(--cmAuto);background:var(--cmAutoBg);}
+    #step-conversation .cmc-b-auto .cmc-dot{background:var(--cmAuto);}
+    #step-conversation .cmc-b-none{border-color:var(--cmNone);color:var(--cmNone);background:var(--cmNoneBg);}
+    #step-conversation .cmc-b-none .cmc-dot{background:var(--cmNone);}
+    #step-conversation .cmc-axiom{background:#fff8e5;border:1px solid #f0d899;border-radius:10px;padding:9px 12px;margin-top:10px;font-size:11.5px;color:#7a5a14;line-height:1.6;}
+    #step-conversation .cmc-axiom b{color:var(--cmInk);}
+    #step-conversation .cmc-grp{background:#fff;border:1px solid var(--cmLine);border-radius:12px;padding:12px 14px 4px;margin-top:12px;}
+    #step-conversation .cmc-grp.cmc-auto{background:var(--cmAutoBg);border-color:#d8c8f0;}
+    #step-conversation .cmc-grp h3{font-size:12.5px;font-weight:800;color:var(--cmInk);display:flex;align-items:center;gap:6px;padding-bottom:7px;border-bottom:1px solid var(--cmLine);margin:0 0 2px;}
+    #step-conversation .cmc-grp h3 .cmc-ico{font-size:14px;}
+    #step-conversation .cmc-grp h3 .cmc-locked{font-size:9.5px;color:var(--cmAuto);background:#fff;border:1px solid #d8c8f0;border-radius:5px;padding:1px 6px;margin-left:auto;font-weight:700;}
+    #step-conversation .cmc-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px dashed #eef1f6;}
+    #step-conversation .cmc-row:last-child{border-bottom:none;}
+    #step-conversation .cmc-label{flex:0 0 42%;color:var(--cmSub);font-size:12px;line-height:1.45;}
+    #step-conversation .cmc-label b{color:var(--cmInk);font-weight:600;font-size:12.5px;}
+    #step-conversation .cmc-label .cmc-sub{font-size:10.5px;color:var(--cmSub);display:block;margin-top:1px;}
+    #step-conversation .cmc-val{flex:1;font-size:14px;font-weight:700;color:var(--cmInk);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+    #step-conversation .cmc-val .cmc-unit{color:var(--cmSub);font-size:11px;font-weight:600;}
+    #step-conversation .cmc-val .cmc-dash{color:var(--cmSub);font-weight:600;}
+    #step-conversation .cmc-edit{font-size:10.5px;font-weight:700;color:var(--cmBlue);background:var(--cmBlueBg);padding:4px 8px;border-radius:7px;border:1px solid #c5d8ff;cursor:pointer;flex-shrink:0;}
+    #step-conversation .cmc-edit:hover{background:#d8e6ff;}
+    #step-conversation .cmc-editbox{display:none;flex:1;align-items:center;gap:5px;flex-wrap:wrap;}
+    #step-conversation .cmc-row.cmc-editing .cmc-val{display:none;}
+    #step-conversation .cmc-row.cmc-editing .cmc-edit{display:none;}
+    #step-conversation .cmc-row.cmc-editing .cmc-editbox{display:flex;}
+    #step-conversation .cmc-editbox input,#step-conversation .cmc-editbox select{font-size:13px;padding:4px 7px;border:1.5px solid var(--cmBlue);border-radius:6px;outline:none;min-width:54px;max-width:140px;font-family:inherit;}
+    #step-conversation .cmc-editbox .cmc-ok{font-size:10.5px;font-weight:700;color:#fff;background:var(--cmBlue);padding:5px 9px;border-radius:6px;border:none;cursor:pointer;}
+    #step-conversation .cmc-editbox .cmc-cancel{font-size:10.5px;color:var(--cmSub);background:transparent;border:none;cursor:pointer;text-decoration:underline;padding:5px;}
+    #step-conversation .cmc-none{background:#f3f5f9;border:1px dashed #cbd2dc;border-radius:12px;padding:12px 14px;margin-top:12px;}
+    #step-conversation .cmc-none h3{font-size:12.5px;font-weight:800;color:var(--cmInk);margin:0 0 4px;border:none;padding:0;display:flex;align-items:center;gap:4px;}
+    #step-conversation .cmc-none .cmc-desc{font-size:11.5px;color:var(--cmSub);line-height:1.65;}
+    #step-conversation .cmc-none .cmc-desc b{color:var(--cmInk);}
+    #step-conversation .cmc-none .cmc-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+    #step-conversation .cmc-none .cmc-chip{font-size:10.5px;font-weight:600;color:var(--cmSub);background:#fff;border:1px solid #d6deea;border-radius:5px;padding:2px 7px;}
+    #step-conversation .cmc-actions{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+    #step-conversation .cmc-btn-primary{background:var(--cmGreen);color:#fff;font-size:14px;font-weight:800;padding:13px 16px;border-radius:11px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(31,157,107,.22);}
+    #step-conversation .cmc-btn-primary:hover{background:#178555;}
+    #step-conversation .cmc-btn-secondary{background:#fff;color:var(--cmInk);font-size:12.5px;font-weight:700;padding:11px 16px;border-radius:11px;border:1.5px solid var(--cmLine);cursor:pointer;}
+    #step-conversation .cmc-btn-secondary:hover{background:#f6f8fc;}
+    #step-conversation .cmc-autonote{font-size:11px;color:var(--cmAuto);margin-top:4px;padding:0 4px;}
   </style>
     <div class="cm-wrap">
       <div class="cm-map">
@@ -200,12 +257,69 @@
         <button class="cm-ghost cm-accent" id="cm-toResult">診断結果を見る ▸</button>
         <button class="cm-ghost" id="cm-toFull">もっと詳細に入力する</button>
       </div>
+      <!-- 入力数値の確認画面（2026-06-25 社長FB）：会話→簡易結果 の間に挟む。
+           中身は会話モード IIFE 内の renderConfirm() で動的描画する＝ここはコンテナだけ。 -->
+      <div class="cmc-confirm" id="cm-confirm" style="display:none;">
+        <div class="cmc-head">
+          <h2>📋 この内容で計算します</h2>
+          <div class="cmc-lead">
+            下の数値が「あなたの今の地図」になります。<br>
+            <b>この画面に出ている数値以外は、結果に反映されません</b>。<br>
+            気になる行は「直す」を押すとその場で書き換えられます。
+          </div>
+          <div class="cmc-legend">
+            <span class="cmc-badge cmc-b-ans"><span class="cmc-dot"></span>🟢 あなたの回答</span>
+            <span class="cmc-badge cmc-b-kari"><span class="cmc-dot"></span>🟡 仮（真ん中の値）</span>
+            <span class="cmc-badge cmc-b-auto"><span class="cmc-dot"></span>🔵 自動で推計</span>
+            <span class="cmc-badge cmc-b-none"><span class="cmc-dot"></span>⚫ 入れていない（0で計算）</span>
+          </div>
+          <div class="cmc-axiom">
+            ⭐ 真ん中（🟡）と自動推計（🔵）は、答えなかった分を <b>無難な値で埋めて</b> いるだけ。気になるなら「直す」で変えてね。
+          </div>
+        </div>
+        <div id="cmc-sections"></div>
+        <div class="cmc-none">
+          <h3>⚫ 今回は入れていない項目（＝<b>0として計算</b>）</h3>
+          <div class="cmc-desc">
+            簡易版なので、下の項目は <b>「無い」前提で計算</b> しています。<br>
+            ある人は「詳細フォームで全部入力する」から追加できます。
+          </div>
+          <div class="cmc-chips">
+            <span class="cmc-chip">学資保険</span>
+            <span class="cmc-chip">変額保険</span>
+            <span class="cmc-chip">個人年金</span>
+            <span class="cmc-chip">外貨保険</span>
+            <span class="cmc-chip">外貨一括</span>
+            <span class="cmc-chip">暗号資産</span>
+            <span class="cmc-chip">確定拠出年金（DC/iDeCo）</span>
+            <span class="cmc-chip">配偶者DC</span>
+            <span class="cmc-chip">住宅維持費（修繕積立金）</span>
+            <span class="cmc-chip">配偶者の死亡保障</span>
+            <span class="cmc-chip">住宅ローン残高・団信</span>
+            <span class="cmc-chip">ローンのボーナス払い</span>
+          </div>
+        </div>
+        <div class="cmc-actions">
+          <button class="cmc-btn-primary" id="cmc-toResult">この内容で結果を見る ▸</button>
+          <button class="cmc-btn-secondary" id="cmc-toFull">詳細フォームで全部入力する</button>
+        </div>
+      </div>
       <div class="cm-toast" id="cm-toast"></div>
     </div>
   </section>
 
   <!-- ===== Step 2: 入力フォーム ===== -->
   <section id="step-input" class="step-hidden">
+
+    <!-- カード単位モードのヘッダ（地図の穴あきカードから ?card=KEY で来たときだけ表示） -->
+    <div id="card-mode-bar" class="card-hidden bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-4">
+      <div class="text-base font-bold text-indigo-800 mb-1">📍 <span id="card-mode-title"></span> を埋める</div>
+      <p class="text-xs text-slate-600 mb-2" id="card-mode-lead"></p>
+      <div class="w-full h-2 bg-indigo-100 rounded-full overflow-hidden" id="card-mode-progress-wrap">
+        <div id="card-mode-progress-fill" class="h-full bg-indigo-500 transition-all" style="width:0%"></div>
+      </div>
+      <div class="text-[11px] text-slate-500 mt-1" id="card-mode-progress-label"></div>
+    </div>
 
     <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 sm:p-6 mb-4">
       <h2 class="text-lg font-bold text-slate-800 mb-3">あなたのこと</h2>
@@ -1137,6 +1251,18 @@
             class="w-full sm:w-auto px-8 py-3 bg-sky-500 text-white rounded-md hover:bg-sky-600 font-bold transition shadow-sm">
       診断する
     </button>
+
+    <!-- カード単位モードのフッター（保存して地図に戻る / キャンセル）。診断するボタンと排他。 -->
+    <div id="card-mode-footer" class="card-hidden mt-4 flex flex-wrap gap-3">
+      <button id="card-save-btn"
+              class="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 font-bold transition shadow-sm">
+        保存して地図に戻る →
+      </button>
+      <button id="card-cancel-btn"
+              class="px-4 py-3 bg-white border border-slate-300 text-slate-600 rounded-md hover:bg-slate-50 transition">
+        キャンセル
+      </button>
+    </div>
   </section>
 
   <!-- ===== Step 3: 健康診断ダッシュボード ===== -->
@@ -1415,6 +1541,20 @@ function restoreInputs(data) {
     const el = document.getElementById('loanRate');
     if (el) el.value = String(data.loanRate);
   }
+  // 2026-06-24：collectInput が読むのに TEXT_INPUT_IDS に無く復元されていなかった任意/hidden フィールドを復元。
+  //   未復元だと「リロード→任意の入力で saveToStorage」時に 0 で上書きされ消える既存の取りこぼしがあった。
+  //   カード単位モードの部分マージ（patchPlanning）でも「DOM=保存値」を保証するために必要。
+  ['insDeathBenefit', 'spouseDcMonthly', 'spouseDcBalance'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && data[id] !== undefined) {
+      el.value = data[id];
+      if (typeof formatNumberInput === 'function' && el.getAttribute('inputmode') === 'numeric') formatNumberInput(el);
+    }
+  });
+  if (data.insLifeStatus !== undefined) {
+    const el = document.getElementById('insLifeStatus');
+    if (el) el.value = data.insLifeStatus;
+  }
   RADIO_NAMES.forEach(name => {
     const v = data[name];
     if (v) {
@@ -1457,6 +1597,12 @@ window.addEventListener('DOMContentLoaded', () => {
   const data = loadFromStorage();
   if (data) restoreInputs(data);
   if (typeof syncDynamicSections === 'function') syncDynamicSections();
+  // 2026-06-24：地図の穴あきカードから ?card=KEY で来たら、そのカードに対応する入力だけのカード単位モードへ。
+  //   data が無くても動く（サンプル地図から穴を埋め始める新規ユーザー）。enterCardMode が他ステップを隠す。
+  const cardParam = new URLSearchParams(location.search).get('card');
+  if (cardParam && typeof CARD_FIELD_MAP !== 'undefined' && CARD_FIELD_MAP[cardParam]) {
+    if (enterCardMode(cardParam)) return;
+  }
   // 社長FB#6（2026-06-15 社長承認）：地図ハブの「📝 入力を確認・更新する」リンクから #input 付きで飛んできたとき、
   //   既存データがある人だけ disclaimer/会話モードをスキップして直接 #step-input を表示する。
   //   既存データが無ければ通常フロー（同意画面）へフォールバック＝新規ユーザーは何も変わらない（YMYL不変）。
@@ -1532,11 +1678,38 @@ function gotoFullFormFromLite() {
   if (typeof syncDynamicSections === 'function') syncDynamicSections();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+// 2026-06-24：簡易版（会話モード）結果から「資産形成の地図」への送客導線。
+//   地図は別ページ（./map/）で、データは localStorage（asset_planning_v1）でのみ引き継がれる。
+//   会話モードは軸A対応で saveToStorage を呼ばない＝この時点で localStorage には会話の回答が入っていない。
+//   そこで地図へ進む瞬間に collectInputForLite()（保険系を no/0 に整えた整合データ＝簡易結果と同じ）を書く。
+//   ・raw DOM ではなく collectInputForLite を使うので、地図の数字が簡易結果と一致する。
+//   ・「変額やめれば +372万」型の断定は hengaku=no 強制のため発火しない＝軸Aの精神を保持。
+//   ・_origin='lite' を付け、詳細フォーム由来のリッチな保存データは上書きしない（クロバー防止）。
+function goToMapFromLite() {
+  try {
+    const existing = loadFromStorage();
+    if ((!existing || existing._origin === 'lite') && typeof collectInputForLite === 'function') {
+      const lite = collectInputForLite();
+      lite._origin = 'lite';
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(lite));
+    }
+  } catch (e) { /* localStorage 不可でも地図へは進む（地図側でサンプル表示にフォールバック） */ }
+  location.href = './map/';
+}
+
 // cta-lite-middle は renderResultLite で動的生成されるためイベント委譲で対応。
 document.addEventListener('click', (e) => {
   const t = e.target.closest && e.target.closest('#cta-lite-top, #cta-lite-middle, #cta-lite-bottom, #cta-lite-shortterm');
   if (t) gotoFullFormFromLite();
 });
+// cta-lite-map（簡易結果の地図導線）も動的生成のためイベント委譲。
+document.addEventListener('click', (e) => {
+  const m = e.target.closest && e.target.closest('#cta-lite-map');
+  if (m) goToMapFromLite();
+});
+// カード単位モードのフッター（静的要素）。保存して地図へ戻る / キャンセル。
+$('#card-save-btn')?.addEventListener('click', () => { if (typeof saveCardAndReturn === 'function') saveCardAndReturn(); });
+$('#card-cancel-btn')?.addEventListener('click', () => { if (typeof cancelCard === 'function') cancelCard(); });
 
 $('#restart-lite-btn')?.addEventListener('click', () => {
   // 会話モードIIFE内の state を完全に初期化するため、reload で「最初から」を担保。
@@ -2179,6 +2352,158 @@ function collectInputForLite() {
   return d;
 }
 
+/* ====== カード単位モード（2026-06-24）======
+   地図の穴あきカード（empty/attention）から ?card=KEY で来たとき、その地図カードに対応する
+   詳細フォームの入力群「だけ」を表示し、入力後 部分マージ保存して地図へ戻す。
+   ・表示制御は .card-hidden のトグルのみ（数値計算には一切触れない＝YMYL不変）。
+   ・保存は patchPlanning（部分マージ）。collectInput の全上書きは使わない＝表示していない項目は保存値を温存。
+   ・地図側 gotoAreaSafe（app.04.shared.js）から ../?card=KEY で遷移してくる。exit は locked のため対象外。 */
+
+// 地図カードキー → 詳細フォームの「足場」入力（この入力が属する群を表示する）。
+//   fields に挙げた入力の所属群（cardGroupOf で解決）＋ extraGroups のセレクタ群を表示する。
+//   over-include（配偶者群に家族構成が同居等）は許容＝表示中の入力は WYSIWYG で保存されるため取りこぼさない。
+const CARD_FIELD_MAP = {
+  cashflow:   { title: '家計（毎月のお金）', lead: '毎月の手取り・支出と、共働きなら世帯の収入を入れると「月の余り」が現実に近づきます。',
+                fields: ['income', 'expense', 'salaryIncrease', 'spouseWorks'], required: ['income', 'expense'] },
+  defense:    { title: '守りの土台（生活防衛資金）', lead: '銀行貯金と毎月の支出、5年以内の大きな出費から「いざという時の備え」が足りているか見ます。',
+                fields: ['bank', 'expense', 'otherShortTerm', 'housingPlan', 'housingPlanYears'], required: ['bank', 'expense'] },
+  coverage:   { title: '保障（保険の見直し）', lead: '加入している保険を入れると、貯蓄と保障が混ざっていないか・見直し余地があるかを見ます。',
+                fields: ['gakushi', 'hengaku', 'kojinNenkin', 'gaikaHoken', 'gaikaIkkatsu', 'spouseInsDeathBenefit'], required: [] },
+  allocation: { title: '投資の型（資産配分）', lead: 'NISA・投信・暗号資産・確定拠出年金の状況から、いまの資産配分の形を見ます。',
+                fields: ['nisa', 'toushinShin', 'kojinKokusaiBalance', 'crypto', 'dcMonthly', 'dcBalance', 'spouseDcMonthly', 'period', 'experience', 'riskA'], required: [] },
+  housing:    { title: '住まい（家賃・ローン）', lead: '住まいの種類と家賃／ローンを入れると、返済比率や完済時期の負担を見ます。',
+                fields: ['housing', 'rentMonthly', 'loanMonthly', 'loanBalance', 'danshin', 'propertyType', 'shuzenMonthly'], required: ['housing'] },
+  lifeevent:  { title: 'ライフイベント（将来の出費）', lead: '子の教育・住宅・介護など、これからの大きな出費の山を地図に描きます。',
+                fields: ['kidCount', 'housingPlan', 'housingPlanYears', 'otherShortTerm', 'careOneTime'],
+                extraGroups: ['#kidEdu-section'], required: [] },
+  // exit は地図側で locked（ペイウォール）＝カード単位モードの対象外（社長承認・8方針=サブスク第一）。
+};
+
+// 入力要素 → 表示すべき「群」を解決。最寄りの id 末尾 '-section' 群を優先し、無ければ section-card 直下の
+//   space-y 直子（トップレベル群）を返す。配偶者・ローン・修繕など条件表示のサブ群を正しく単位化する。
+function cardGroupOf(el) {
+  let node = el, top = null;
+  while (node && node.id !== 'step-input' && node.parentElement) {
+    if (node.id && /-section$/.test(node.id)) return node;
+    const p = node.parentElement;
+    if (/\bspace-y-/.test(p.className || '') && p.parentElement && p.parentElement.matches && p.parentElement.matches('#step-input > div.bg-white')) {
+      top = node;
+    }
+    node = p;
+  }
+  return top;
+}
+
+// KEY のカードで表示する群の配列を返す（fields の所属群 + extraGroups）。
+function resolveCardGroups(KEY) {
+  const m = CARD_FIELD_MAP[KEY];
+  if (!m) return [];
+  const set = new Set();
+  (m.fields || []).forEach(f => {
+    const el = document.getElementById(f) || document.querySelector(`input[name="${f}"]`);
+    if (el) { const g = cardGroupOf(el); if (g) set.add(g); }
+  });
+  (m.extraGroups || []).forEach(sel => { const g = document.querySelector(sel); if (g) set.add(g); });
+  return Array.from(set);
+}
+
+// 表示する群 + その祖先だけを残し、無関係な群・section-card を .card-hidden で隠す。
+//   step-hidden（条件表示）には触れない＝表示する群の中の条件付きサブ群は既存ロジックのまま。
+function applyCardScope(shownGroups) {
+  const candidates = document.querySelectorAll('#step-input > div.bg-white, #step-input > div.bg-white > div[class*="space-y"] > div, #step-input [id$="-section"]');
+  candidates.forEach(el => {
+    const related = shownGroups.some(g => el === g || el.contains(g) || g.contains(el));
+    el.classList.toggle('card-hidden', !related);
+  });
+}
+
+// 部分マージ保存：表示していない項目（保存値）を壊さずに、partial のキーだけ上書きする。
+//   _origin は削除＝カードを明示編集した時点で「pure lite」ではなくなり、後の lite→地図上書きから保護する。
+function patchPlanning(partial) {
+  if (!partial || typeof partial !== 'object') return;
+  let cur = {};
+  try { cur = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}; } catch (e) { /* noop */ }
+  const next = Object.assign({}, cur, partial);
+  delete next._origin;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) { /* QuotaExceeded 等は無視 */ }
+}
+
+// 表示中の群にある入力だけを collectInput() の完全オブジェクトから抜き出す（WYSIWYG・配列は特例処理）。
+function collectInputForCard(shownGroups) {
+  const full = collectInput();
+  const partial = {};
+  shownGroups.forEach(g => {
+    g.querySelectorAll('input, select').forEach(el => {
+      if (el.closest('.card-hidden')) return;
+      if (el.id && Object.prototype.hasOwnProperty.call(full, el.id)) partial[el.id] = full[el.id];
+      if (el.type === 'radio' && el.name && Object.prototype.hasOwnProperty.call(full, el.name)) partial[el.name] = full[el.name];
+    });
+  });
+  // 配列・複合キー（id では拾えない）
+  const has = sel => shownGroups.some(g => g.matches && (g.matches(sel) || g.querySelector(sel)));
+  if (has('#kidCount') || has('#kidEdu-section') || has('#kidEdu-container')) {
+    partial.family = full.family; partial.kidCount = full.kidCount;
+    partial.kidsEdu = full.kidsEdu; partial.kidsAge = full.kidsAge;
+  }
+  if (has('#gaikaCheck1')) partial.gaikaChecks = full.gaikaChecks;
+  return partial;
+}
+
+// 進捗バー更新（required のあるカードのみ）。値が入っていれば「埋まった」とみなす簡易判定。
+let CARD_CURRENT = null, CARD_GROUPS = [];
+function updateCardProgress() {
+  const m = CARD_CURRENT && CARD_FIELD_MAP[CARD_CURRENT];
+  const wrap = document.getElementById('card-mode-progress-wrap');
+  const fill = document.getElementById('card-mode-progress-fill');
+  const label = document.getElementById('card-mode-progress-label');
+  if (!m || !wrap || !fill || !label) return;
+  const req = m.required || [];
+  if (!req.length) { wrap.style.display = 'none'; label.textContent = ''; return; }
+  wrap.style.display = '';
+  const filled = req.filter(id => {
+    const el = document.getElementById(id) || document.querySelector(`input[name="${id}"]:checked`);
+    if (!el) return false;
+    const v = (el.value || '').toString().replace(/,/g, '').trim();
+    return v !== '' && v !== '0';
+  }).length;
+  const pct = Math.round((filled / req.length) * 100);
+  fill.style.width = pct + '%';
+  label.textContent = `必須項目 ${filled} / ${req.length}`;
+}
+
+// カード単位モードに入る（DOMContentLoaded から ?card=KEY のとき呼ばれる）。
+function enterCardMode(KEY) {
+  const m = CARD_FIELD_MAP[KEY];
+  if (!m) return false;
+  CARD_CURRENT = KEY;
+  // 他ステップを隠し、入力フォームを表示
+  ['step-disclaimer', 'step-conversation', 'step-result', 'step-result-lite'].forEach(id => document.getElementById(id)?.classList.add('step-hidden'));
+  document.getElementById('step-input')?.classList.remove('step-hidden');
+  // 条件表示サブ群（配偶者/ローン/修繕/子の教育）を現値で同期してから群を解決する
+  if (typeof syncDynamicSections === 'function') syncDynamicSections();
+  CARD_GROUPS = resolveCardGroups(KEY);
+  applyCardScope(CARD_GROUPS);
+  // ヘッダ／フッター
+  const titleEl = document.getElementById('card-mode-title'); if (titleEl) titleEl.textContent = m.title;
+  const leadEl = document.getElementById('card-mode-lead'); if (leadEl) leadEl.textContent = m.lead || '';
+  document.getElementById('card-mode-bar')?.classList.remove('card-hidden');
+  document.getElementById('card-mode-footer')?.classList.remove('card-hidden');
+  document.getElementById('diagnose-btn')?.classList.add('card-hidden');
+  updateCardProgress();
+  // 表示群内の入力変化で進捗更新＆条件サブ群の出し入れに追従して再スコープ
+  document.getElementById('step-input')?.addEventListener('input', () => { updateCardProgress(); }, { passive: true });
+  document.getElementById('step-input')?.addEventListener('change', () => { applyCardScope(CARD_GROUPS); }, { passive: true });
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  return true;
+}
+
+function saveCardAndReturn() {
+  if (!CARD_CURRENT) { location.href = './map/'; return; }
+  patchPlanning(collectInputForCard(CARD_GROUPS));
+  location.href = './map/';
+}
+function cancelCard() { location.href = './map/'; }
+
 // ====== Diagnosis logic ======
 // 派生C：世帯収入ヘルパー（健診側）。地図 asset_map_app/app.01.calc.js:53 と同じシグナチャ。
 //   ・family==='single' or spouseWorks!=='yes' なら本人収入のみ＝従来計算と完全一致（YMYL不変）
@@ -2375,7 +2700,7 @@ function calcRetirement(d, reviewOptions, emergencyFund = 0, shortTermTotal = 0)
   const dcBal = (d.dcBalance || 0) + (_isHouseholdDc ? (d.spouseDcBalance || 0) : 0);
 
   // 月余り（純粋）
-  const pureSurplus = Math.max(0, householdIncome(d) - (d.expense || 0));   // 派生C：余り＝世帯収入−支出（共働きで配偶者収入を反映・独身/専業は不変）
+  const pureSurplus = householdIncome(d) - (d.expense || 0);   // 2026-06-24 fix①：赤字はマイナスのまま流す＝現役の赤字が老後資産を取り崩す（旧 Math.max(0,…) は赤字を0に丸め幻の資産増を生んでいた）。派生C：共働きで配偶者収入を反映・独身/専業は不変
 
   // 既存の月額積立（各種商品）
   const gakushiM = (d.gakushi === 'yes') ? (d.gakushiMonthly || 0) : 0;
@@ -2535,7 +2860,7 @@ function calcRetirement(d, reviewOptions, emergencyFund = 0, shortTermTotal = 0)
     const total = bankB + kojinB + gaikaB + hengakuB + toushinBankB + stockB + currentCrypto;
     if (yearly.length > 0) yearly[yearly.length - 1].asset = total;
 
-    const monthlyWithdraw = (total * 0.04) / 12;
+    const monthlyWithdraw = (Math.max(0, total) * 0.04) / 12;   // 2026-06-24 fix②：総資産が負なら取崩0（年金は別途受給）。黒字ペルソナは total>0 で no-op
     const totalMonthlyIncome = pensionEst + monthlyWithdraw;
     const gap = (d.retireMonthly || 0) - totalMonthlyIncome;
 
@@ -2555,8 +2880,9 @@ function calcRetirement(d, reviewOptions, emergencyFund = 0, shortTermTotal = 0)
     // === P1-2（2026-06-18）：退職後取崩フェーズ計算（95歳まで・不足補填型・預金優先→stock）===
     //   Q2 採用：B2 不足補填型（希望生活費−年金 だけ取崩）
     //   Q4 採用：E2 預金優先取崩→不足分のみ stock
-    //   既存 monthlyWithdraw/gap は維持（4%取崩との比較指標・okCount判定の互換性）。
-    //   新規：depletionAge（枯渇年）・assetAtAges（80/85/90/95歳残資産）を追加。
+    //   Tier2（2026-06-24）：合否/枯渇表示は calcCashflow(100) に一本化したため、ここの gap/depletionAge/assetAtAges は
+    //   「表示では未使用」（退職グラフ用の yearly 生成は継続するためループ自体は残す）。calcRetirement は byte 不変＝退職時資産(数値FP)は no-op。
+    //   既存 monthlyWithdraw/gap/depletionAge/assetAtAges は後方互換・参考のため返却のみ維持。
     let depletionAge = null;
     const wishMonthly = d.retireMonthly || 0;
     const endAge = 95;
@@ -3102,12 +3428,12 @@ function diagnose(d) {
                    + (d.hengaku === 'yes' ? (d.hengakuMonthly || 0) : 0)
                    + (d.kojinNenkin === 'yes' ? (d.kojinNenkinMonthly || 0) : 0)
                    + (d.gaikaHoken === 'yes' ? (d.gaikaHokenMonthly || 0) : 0);
-  const insRatio = d.income > 0 ? insMonthly / d.income : 0;
+  const insRatio = householdIncome(d) > 0 ? insMonthly / householdIncome(d) : 0;   // A-3（2026-06-25 Tier3）：世帯収入ベース（地図 app.01:326 と一致・共働きの過大警告を解消。単身/非共働きは householdIncome=income で不変）
   if (insMonthly > 0 && insRatio > 0.10) {
     nejireList.push({
       level: 'yellow',
-      title: `保険料があなたの手取りの ${(insRatio * 100).toFixed(0)}% で重め`,
-      finding: `毎月の保険料合計 <strong>${formatYen(insMonthly)}</strong> が${hasSpouseIncome(d) ? 'あなたの' : ''}手取り ${formatYen(d.income)} の ${(insRatio * 100).toFixed(0)}% を占めています。${hasSpouseIncome(d) ? '<span class="text-xs text-slate-500">（配偶者の収入は含まず本人手取りで判定）</span><br>' : ''}一般的な目安は手取りの <strong>5〜10%</strong> 程度。それを超えると家計圧迫や投資余力の不足に繋がります。`,
+      title: `保険料が手取りの ${(insRatio * 100).toFixed(0)}% で重め`,
+      finding: `毎月の保険料合計 <strong>${formatYen(insMonthly)}</strong> が${hasSpouseIncome(d) ? '世帯' : ''}手取り ${formatYen(householdIncome(d))} の ${(insRatio * 100).toFixed(0)}% を占めています。${hasSpouseIncome(d) ? '<span class="text-xs text-slate-500">（共働きのため世帯手取りで判定）</span><br>' : ''}一般的な目安は手取りの <strong>5〜10%</strong> 程度。それを超えると家計圧迫や投資余力の不足に繋がります。`,
       alternative: '保障と運用が混ざった保険（変額・外貨建て・貯蓄型・個人年金）は<strong>掛け捨て + NISA に分離</strong>で大幅にコスト削減できます。必要保障額（遺族年金考慮済）を見直して、過剰な保障部分を整理する検討を。<br><br>📖 <a href="https://smart-side.dev/posts/what-is-savings-insurance/" target="_blank" rel="noopener" class="text-sky-600 underline">詳しく：貯蓄型保険とは（smart-side）→</a>',
     });
   }
@@ -3538,7 +3864,7 @@ function renderCashflowSummaryLite(d, result) {
   return `
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
       <div class="bg-white border border-slate-200 rounded-lg p-3">
-        <div class="text-xs text-slate-500 mb-1">月の余り（手取り − 支出）</div>
+        <div class="text-xs text-slate-500 mb-1">いまの月の余り（現役・手取り − 支出）</div>
         <div class="font-bold text-xl ${surplusClass}">${formatYen(surplus)}</div>
       </div>
       <div class="bg-white border border-slate-200 rounded-lg p-3">
@@ -3642,10 +3968,6 @@ function renderRetirementLite(d, result) {
   const buildCard = (s, i, opts = {}) => {
     const lbl = labels[i];
     const monthlyIncome = Number.isFinite(s.totalMonthlyIncome) ? s.totalMonthlyIncome : 0;
-    const gap = Number.isFinite(s.gap) ? s.gap : 0;
-    const isShortfall = gap > 0;
-    const gapColor = isShortfall ? '#e11d48' : '#10b981';
-    const gapLabel = isShortfall ? '不足' : '余裕';
     const isMain = !!opts.main;
     const totalSize = isMain ? 'text-3xl' : 'text-xl';
     const padding = isMain ? 'p-4' : 'p-3';
@@ -3660,7 +3982,7 @@ function renderRetirementLite(d, result) {
           <div class="text-slate-600">老後の月収入</div>
           <div class="font-bold text-slate-800">${formatYen(monthlyIncome)}<span class="text-slate-500 font-normal text-xs">/月</span></div>
           <div class="text-slate-500 text-xs">（取崩4% + 年金）</div>
-          <div class="pt-1" style="color:${gapColor}"><strong>vs 希望 ${gapLabel} ${formatYen(Math.abs(gap))}<span class="font-normal">/月</span></strong></div>
+          <div class="pt-1 text-slate-500 text-xs">希望 月${formatYen(desiredMonthly)}（4%取崩は参考値・持続判定は下の「いつまで持つか」を参照）</div>
         </div>
       </div>`;
     if (!isMain) {
@@ -3679,60 +4001,66 @@ function renderRetirementLite(d, result) {
   // 詳細：悲観・堅実・楽観の3枚（折りたたみ内）
   const detailCards = [0, 1, 3].map(i => buildCard(ret.scenarios[i], i)).join('');
 
-  // 着手3（2026-06-17）：verdictBox を3段に細分化。
-  //   gap>0 を「不足」と数えるが、誤差吸収のため −1,000 円以上を「足りる」扱い（s.gap<=0 → ok）
-  // P1-7（2026-06-18）：okCount閾値判定から属性式判定に変更。
-  //   旧：緑=okCount>=4（悲観でも足りる）／黄=2-3／赤=<=1
-  //   新：緑=標準OK ∧ 堅実OK（実質5% かつ 実質3% で足りる）／黄=標準OK のみ／赤=標準NG
-  //   理由：悲観実質1%は長期T-Bill並みで株式投資の意味が消える異常値。共済強・退職金多の世帯（正樹型）で
-  //         悲観1本だけ NG により黄判定される過剰悲観を解消（監査報告NF7）。
-  //   okCount 表記（「4シナリオ中 N 本」）は透明性維持のため文言に残す。
-  //   「足りる/足りない」断定回避：すべて「見込み」「可能性」止め（既存方針継承）
-  const okCount = ret.scenarios.slice(0, 4).filter(s => (Number.isFinite(s.gap) ? s.gap : 0) <= 0).length;
-  const standardScenario = ret.scenarios[2];
-  const conservativeScenario = ret.scenarios[1];
-  const standardGap = Number.isFinite(standardScenario?.gap) ? standardScenario.gap : 0;
-  const conservativeGap = Number.isFinite(conservativeScenario?.gap) ? conservativeScenario.gap : 0;
-  const standardOk = standardGap <= 0;
-  const conservativeOk = conservativeGap <= 0;
-  const standardIncome = standardScenario?.totalMonthlyIncome || 0;
-  let verdictBox;
-  if (standardOk && conservativeOk) {
-    // 着手10（2026-06-17）：✓余裕の時の「次の打ち手カード」。正樹・修一の物足りなさ解消。
-    // P1-3（2026-06-18）：age + family + kidsAge でカード6枚を動的選択。
-    //   ライフステージ別（〜30代/40代/50代/60代+）×家族構成（独身/DINKS/子小/子高/子独立）で分岐。
-    //   30-40代に「介護準備」「寄付・贈与」のような遠い話を出さず、50-60代に「住宅取得」を出さない。
-    const surplusMonthly = -standardGap; // 余裕額
-    const surplusFiveYears = Math.max(0, surplusMonthly * 60);
-    const cards = buildNextStepsCards(d);
-    const cardsHtml = cards.map(c => `
+  // Tier2（2026-06-24 社長承認）：合否(緑黄赤)を 4%取崩(gap) でなく calcCashflow(100・不足補填) の枯渇年から導出。
+  //   旧(あ)は無年金期を無視し(G-4)、地図(=calcCashflow統一済)・FP一次情報(金融庁/FP協会/SMBC)と矛盾していた。
+  //   マッピング（閾値90歳・社長③承認の叩き台。枯渇年は必ず併記＝FP推奨「ラベル単独は危険・幅を見せる」）：
+  //     緑＝標準(実質5%)＆堅実(実質3%)とも100歳まで枯渇しない
+  //     黄＝標準は持つが堅実で枯渇／または標準も枯渇だが90歳以降
+  //     赤＝標準でも90歳より前に早期枯渇
+  //   赤字ガード（Tier1 fix④）は色に関わらず全分岐に適用（hoist）。
+  const VERDICT_THRESHOLD_AGE = 90;
+  const stdDep = cashflowDepletionAge(d, ret, 'standard');        // 100歳まで持てば null
+  const consDep = cashflowDepletionAge(d, ret, 'conservative');
+  let verdictLevel;
+  if (stdDep == null && consDep == null) verdictLevel = 'green';
+  else if (stdDep == null || stdDep >= VERDICT_THRESHOLD_AGE) verdictLevel = 'amber';
+  else verdictLevel = 'rose';
+  const depText = (dep) => dep == null ? '100歳まで持続' : `${dep}歳で底をつく`;
+  const isDeficitLite = result.monthlySurplus < 0;
+  const deficitCardLite = isDeficitLite ? `
+      <div class="bg-rose-50 border border-rose-300 rounded-lg p-3 mb-3">
+        <div class="font-bold text-rose-800 text-sm mb-2">⚠ いまの家計は赤字です — 老後の前に、まず黒字化が先</div>
+        <div class="text-xs text-slate-600"><strong>いまは毎月の支出が手取りを ${formatYen(-result.monthlySurplus)} 上回っている</strong>ため、老後資産の取り崩し計画より先に、固定費の見直しで家計を黒字にするのが順番です。家計が黒字になれば、下の老後の見込みもさらに良くなります。</div>
+      </div>` : '';
+  let colorBox, extraCard = '';
+  if (verdictLevel === 'green') {
+    colorBox = `<div class="bg-emerald-50 border-2 border-emerald-300 rounded-lg p-3 mb-3">
+         <div class="font-bold text-emerald-800 text-sm mb-1">○ 簡易版の見込みでは、標準＋堅実シナリオとも資産は100歳まで持続</div>
+         <div class="text-xs text-emerald-700">希望 月${formatYen(desiredMonthly)} で取り崩しても、標準（実質5%）・堅実（実質3%）の両シナリオで100歳まで資産が底をつかない見込みです。<br><br>⚠ ただし簡易版は<strong>配偶者退職金・NISA/投信残高・保険系・DC等を計算に入れていません</strong>。実額があれば結果は変わります。詳細フォームで反映してみてください。</div>
+       </div>`;
+    // 着手10/P1-3：余裕がある人の「次の打ち手」カード（黒字のときのみ）。赤字は deficitCardLite が出る。
+    if (!isDeficitLite) {
+      const cards = buildNextStepsCards(d);
+      const cardsHtml = cards.map(c => `
           <div class="p-2 bg-${c.color}-50 border border-${c.color}-200 rounded">
             <div class="font-semibold text-${c.color}-800">${c.icon} ${c.title}</div>
             <div class="text-slate-600 mt-1">${c.desc}</div>
           </div>`).join('');
-    const nextStepsCard = `
+      extraCard = `
       <div class="bg-white border border-emerald-300 rounded-lg p-3 mb-3">
         <div class="font-bold text-emerald-800 text-sm mb-2">💡 余裕がある人の「次の打ち手」</div>
-        <div class="text-xs text-slate-600 mb-2">月の余裕 ${formatYen(surplusMonthly)} × 5年で約 <strong>${formatYen(surplusFiveYears)}</strong>。何に振り分けたいですか？</div>
+        <div class="text-xs text-slate-600 mb-2">老後資産は100歳まで持続見込み。いまの家計に余裕がある分を、何に振り分けたいですか？</div>
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">${cardsHtml}
         </div>
         <p class="text-[10px] text-slate-500 mt-2">※ どれが正解という話ではなく、価値観に応じた配分の話です。</p>
       </div>`;
-    verdictBox = `<div class="bg-emerald-50 border-2 border-emerald-300 rounded-lg p-3 mb-3">
-         <div class="font-bold text-emerald-800 text-sm mb-1">○ 簡易版の見込みでは、標準＋堅実の両シナリオで希望生活費に届く</div>
-         <div class="text-xs text-emerald-700">希望 月${formatYen(desiredMonthly)} に対し、標準（実質5%）と堅実（実質3%）の両シナリオで老後の月収入が希望を上回っています（標準シナリオでは月 ${formatYen(standardIncome)}・4シナリオ中 <strong>${okCount}本</strong>がOK）。<br><br>⚠ ただし簡易版は<strong>配偶者退職金・NISA/投信残高・保険系・DC等を計算に入れていません</strong>。実額があれば結果は変わります。詳細フォームで反映してみてください。</div>
-       </div>${nextStepsCard}`;
-  } else if (standardOk) {
-    verdictBox = `<div class="bg-amber-50 border-2 border-amber-300 rounded-lg p-3 mb-3">
-         <div class="font-bold text-amber-800 text-sm mb-1">⚠ 標準シナリオなら足りる見込み・堅実シナリオで不足の可能性</div>
-         <div class="text-xs text-amber-700">希望 月${formatYen(desiredMonthly)} に対し、標準シナリオ（実質5%）では月 ${formatYen(standardIncome)} で足りる見込みですが、堅実シナリオ（実質3%）では不足の可能性があります（4シナリオ中 <strong>${okCount}本</strong>がOK）。<br>運用リターンが想定より低い場合に備えて、詳細フォームで保険見直し・預金有効活用などの改善余地を見ておくと安心です。</div>
+    }
+  } else if (verdictLevel === 'amber') {
+    // stdDep==null（標準は100歳まで持続・堅実だけ枯渇）の見出しと、標準も枯渇の見出しを出し分け（文言矛盾回避）。
+    const amberTitle = stdDep == null
+      ? `⚠ 標準シナリオは100歳まで持続の見込みですが、堅実シナリオでは資産が ${depText(consDep)} 可能性`
+      : `⚠ 標準シナリオでは資産が ${depText(stdDep)} 見込み（100歳までは届かない可能性）`;
+    colorBox = `<div class="bg-amber-50 border-2 border-amber-300 rounded-lg p-3 mb-3">
+         <div class="font-bold text-amber-800 text-sm mb-1">${amberTitle}</div>
+         <div class="text-xs text-amber-700">希望 月${formatYen(desiredMonthly)} で取り崩すと、標準（実質5%）では <strong>${depText(stdDep)}</strong>見込み、堅実（実質3%）では <strong>${depText(consDep)}</strong>見込みです。<br>運用リターンが想定より低い場合に備えて、詳細フォームで保険見直し・預金有効活用などの改善余地を見ておくと安心です。</div>
        </div>`;
   } else {
-    verdictBox = `<div class="bg-rose-50 border-2 border-rose-300 rounded-lg p-3 mb-3">
-         <div class="font-bold text-rose-800 text-sm mb-1">⚠ 標準シナリオでも不足の可能性（月 ${formatYen(Math.max(standardGap, 0))} 不足）</div>
-         <div class="text-xs text-rose-700">希望 月${formatYen(desiredMonthly)} に対し、標準シナリオでの老後の月収入は ${formatYen(standardIncome)}。4シナリオ中 ${okCount}本のみが希望を上回っています。<br>詳細フォームに進むと、保険見直し・預金有効活用・繰上返済 vs NISA などで月数万円の改善余地が見えることがあります（簡易版では改善幅は計算していません）。</div>
+    colorBox = `<div class="bg-rose-50 border-2 border-rose-300 rounded-lg p-3 mb-3">
+         <div class="font-bold text-rose-800 text-sm mb-1">⚠ 標準シナリオでも資産が ${depText(stdDep)} 見込み（早期枯渇の可能性）</div>
+         <div class="text-xs text-rose-700">希望 月${formatYen(desiredMonthly)} で取り崩すと、標準（実質5%）でも <strong>${depText(stdDep)}</strong>見込みです（堅実では <strong>${depText(consDep)}</strong>）。<br>詳細フォームに進むと、保険見直し・預金有効活用・繰上返済 vs NISA などで改善余地が見えることがあります（簡易版では改善幅は計算していません）。</div>
        </div>`;
   }
+  const verdictBox = colorBox + deficitCardLite + extraCard;
 
   // P1-8（2026-06-18）：3号→106/130/150万円の「壁」メモ。
   //   家族あり ∧ 配偶者就労中 ∧ 配偶者年収が壁付近（96-160万円）のとき結果画面に中立表示。
@@ -3769,13 +4097,13 @@ function renderRetirementLite(d, result) {
       ${mainCard}
     </div>
     ${(() => {
-      // P1-2（2026-06-18）：老後の家計はいつまで持つか（標準シナリオ・不足補填型取崩）
-      const std = ret.scenarios[2];
-      if (!std || !std.assetAtAges) return '';
-      const dep = std.depletionAge;
-      const ages = std.assetAtAges;
-      const ageCardsHtml = [80, 85, 90, 95].map(a => {
-        const v = ages[a];
+      // Tier2（2026-06-24）：calcCashflow(100) ベースに統一（旧：calcRetirement 内 (い)95歳補填の assetAtAges/depletionAge を退役）。
+      if (!Array.isArray(ret.scenarios) || ret.scenarios.length < 4) return '';
+      const cfRows = calcCashflow(d, ret, 'standard');
+      const depRow = cfRows.find(r => r.assetRaw <= 0);   // cfRows を再利用（標準の calcCashflow 重複実行を回避）
+      const dep = depRow ? depRow.age : null;
+      const ageCardsHtml = [80, 85, 90, 95, 100].map(a => {
+        const v = cashflowAssetAt(cfRows, a);
         const shown = (v == null) ? '—' : formatYen(v);
         const color = (v == null) ? 'text-slate-400' : (v <= 0 ? 'text-rose-600' : 'text-slate-800');
         return `<div class="p-2 bg-slate-50 rounded text-center">
@@ -3784,13 +4112,13 @@ function renderRetirementLite(d, result) {
         </div>`;
       }).join('');
       const verdict = (dep == null)
-        ? `<div class="text-emerald-700 text-sm font-bold">✓ 標準シナリオでは 95歳まで持続見込み</div>`
-        : `<div class="text-rose-700 text-sm font-bold">⚠ 標準シナリオでは ${dep}歳で枯渇する見込み</div>`;
-      // 4シナリオの枯渇年を折りたたみで
+        ? `<div class="text-emerald-700 text-sm font-bold">✓ 標準シナリオでは 100歳まで持続見込み</div>`
+        : `<div class="text-rose-700 text-sm font-bold">⚠ 標準シナリオでは ${dep}歳で底をつく見込み</div>`;
+      // 4シナリオの持続見込み（各シナリオの calcCashflow 枯渇年）を折りたたみで
       const sDepRows = ret.scenarios.slice(0,4).map((s, i) => {
         const lbl = labels[i];
-        const d2 = s.depletionAge;
-        const dstr = (d2 == null) ? '95歳以降も持続見込み' : `${d2}歳で枯渇見込み`;
+        const d2 = cashflowDepletionAge(d, ret, s.key);
+        const dstr = (d2 == null) ? '100歳まで持続見込み' : `${d2}歳で底をつく見込み`;
         return `<div class="flex items-center justify-between text-xs py-1 border-b border-slate-100">
           <span style="color:${lbl.color}">●</span>
           <span class="flex-1 ml-2">${lbl.name}（${lbl.rate}）</span>
@@ -3801,9 +4129,9 @@ function renderRetirementLite(d, result) {
         <div class="mb-3 bg-white border border-slate-300 rounded-lg p-3">
           <div class="font-bold text-slate-800 text-sm mb-2">⏳ 老後の家計はいつまで持つか（標準シナリオ）</div>
           ${verdict}
-          <div class="grid grid-cols-4 gap-2 mt-2">${ageCardsHtml}</div>
+          <div class="grid grid-cols-5 gap-2 mt-2">${ageCardsHtml}</div>
           <details class="mt-2">
-            <summary class="cursor-pointer text-xs text-slate-600 select-none">▶ 4シナリオすべての枯渇見込み</summary>
+            <summary class="cursor-pointer text-xs text-slate-600 select-none">▶ 4シナリオすべての持続見込み</summary>
             <div class="mt-2">${sDepRows}</div>
           </details>
           <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
@@ -4232,6 +4560,18 @@ function renderResultLite(d, result) {
         </button>
       </p>
     </div>
+
+    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mt-4 no-print">
+      <p class="text-sm text-slate-700 mb-1">
+        <strong class="text-indigo-700">🗺️ いまの結果を「資産形成の地図」で俯瞰する</strong>
+      </p>
+      <p class="text-xs text-slate-600 mb-3">
+        今〜老後までの時間軸の上に、7 つのエリア（家計・守り・保障・投資・住まい・ライフイベント・出口）を並べて見渡せます。空いているエリアはそこから埋められます。
+      </p>
+      <button type="button" id="cta-lite-map" class="px-5 py-2.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition text-sm font-bold">
+        資産形成の地図を見る →
+      </button>
+    </div>
   `;
   body.innerHTML = html;
 }
@@ -4508,14 +4848,18 @@ function renderLifeEvents(le) {
 // 標準 5% シナリオで現在年齢〜100 歳までの 1 年単位データを生成
 // リタイア前：calcRetirement.scenarios[標準] の yearly を流用（ライフイベント費用は既に反映済み）
 // リタイア後：年金 - 希望生活費 - リタイア後ライフイベント費用 = 残資産から取崩
-function calcCashflow(d, ret) {
-  const annualRate = 0.05;   // 派生D3：退職後の固定利回りは実質（標準シナリオ実質5%に合わせる・地図 calcCashflow と同値）
+function calcCashflow(d, ret, scenarioKey = 'standard') {
+  // Tier2（2026-06-24 社長承認）：地図 app.01.calc.js:344 と同形にシナリオ対応化。
+  //   scenarioKey 未指定＝'standard' で従来 byte 一致（annualRate=0.05・std=標準）。
+  //   合否/枯渇判定を calcCashflow(100) 単一エンジンから導出するため、堅実など他シナリオの枯渇年も出せるようにする。
+  const RATE_BY_KEY = { pessimistic: 0.01, conservative: 0.03, standard: 0.05, optimistic: 0.07 };  // 実質（=名目−物価2%）。standard=0.05 は従来ハードコードと同値
+  const annualRate = RATE_BY_KEY[scenarioKey] != null ? RATE_BY_KEY[scenarioKey] : 0.05;
   const startAge = d.age || 0;
   const endAge = 100;
   const retireAge = d.retireAge || endAge;
   // P1-11a（2026-06-19）：calcRetirement と同じ retirementYear をローカル算出して effectiveRate に渡す。
   const retirementYear = NOW_YEAR + Math.max(0, (d.retireAge || 0) - (d.age || 0));
-  const std = ret.scenarios.find(s => s.key === 'standard') || ret.scenarios[0];   // 派生D2拡張維持：4シナリオ化に伴いindex参照からkey検索へ
+  const std = ret.scenarios.find(s => s.key === scenarioKey) || ret.scenarios[0];   // Tier2：シナリオ別 yearly（standard 指定で従来と一致）
   const stdYearly = (std && std.yearly) ? std.yearly : [];
   const pensionAnnual = (ret.pensionEst || 0) * 12;
   const retireAnnualExpense = (d.retireMonthly || 0) * 12;
@@ -4573,6 +4917,19 @@ function calcCashflow(d, ret) {
     rows.push({ age, status, incomeAnnual, expenseAnnual, surplusAnnual, assetEnd: Math.max(0, assetEnd), assetRaw: assetEnd, lifeEventCost });
   }
   return rows;
+}
+
+// Tier2（2026-06-24）：calcCashflow(100) 基準の枯渇年（assetRaw が初めて 0 以下になる年齢／100歳まで持てば null）。
+//   合否(緑黄赤)・「いつまで持つか」を単一エンジン（calcCashflow）から導出するための共通ヘルパー。
+function cashflowDepletionAge(d, ret, scenarioKey = 'standard') {
+  const rows = calcCashflow(d, ret, scenarioKey);
+  const dep = rows.find(r => r.assetRaw <= 0);
+  return dep ? dep.age : null;
+}
+// Tier2：指定年齢時点の資産（assetEnd＝0でクランプ済・枯渇後は0表示）。無ければ null。
+function cashflowAssetAt(rows, targetAge) {
+  const r = rows.find(x => x.age === targetAge);
+  return r ? Math.round(r.assetEnd) : null;
 }
 
 // 5 年単位（+ 現在年齢・リタイア年齢・100 歳・枯渇年は単独行）でテーブル化
@@ -4710,7 +5067,6 @@ function renderRetirement(d, ret, retInsurance, retBank, retReviewed) {
     const diff = s.total - aBase.total;
     const borderClass = p.highlight ? 'border-2 border-emerald-400' : 'border border-slate-300';
     const bgClass = p.highlight ? 'bg-emerald-50' : 'bg-white';
-    const gapColor = s.gap <= 0 ? 'text-emerald-700' : 'text-rose-700';
     return `
       <div class="${bgClass} rounded p-3 ${borderClass}">
         <div class="font-bold text-sm mb-1" style="color:${p.color}">${p.label}</div>
@@ -4725,7 +5081,7 @@ function renderRetirement(d, ret, retInsurance, retBank, retReviewed) {
         <div class="mt-2 pt-2 border-t border-slate-200 text-xs space-y-1">
           <div>月取崩 (4%)：<strong>${formatYen(s.monthlyWithdraw)}</strong></div>
           <div>+ 年金：<strong>${formatYen(s.totalMonthlyIncome)}</strong>/月</div>
-          <div class="${gapColor} font-bold">vs 希望 ${s.gap <= 0 ? '余裕' : '不足'} ${formatYen(Math.abs(s.gap))}/月</div>
+          <div class="text-slate-400">希望 月${formatYen(d.retireMonthly || 0)}（4%取崩は参考値・持続判定は「いつまで持つか」参照）</div>
         </div>
       </div>`;
   };
@@ -4742,7 +5098,12 @@ function renderRetirement(d, ret, retInsurance, retBank, retReviewed) {
   const nisaOrIdeco = isIDecoPriorityRet ? 'iDeCo / NISA インデックス（45 歳以上は iDeCo 優先）' : 'NISA インデックス';
   const reviewSources = [];
   if (ret.hasInsurance) reviewSources.push(`① 保険系（学資※ / 変額 / 個人年金 / 外貨建て）を解約 → ${nisaOrIdeco} に振替`);
-  reviewSources.push(`② 月余り（年 ${formatYen(ret.pureSurplus * 12)}・昇給で年々増加）を預金じゃなく ${nisaOrIdeco} に積立`);
+  // 2026-06-24 fix④（詳細フォームにも展開）：赤字（pureSurplus<0）で「月余りを積立」は成立しないので黒字化を先に提示。黒字は従来の文言と完全一致＝no-op。
+  if (ret.pureSurplus > 0) {
+    reviewSources.push(`② 月余り（年 ${formatYen(ret.pureSurplus * 12)}・昇給で年々増加）を預金じゃなく ${nisaOrIdeco} に積立`);
+  } else {
+    reviewSources.push(`② いまは月の支出が手取りを月 ${formatYen(-ret.pureSurplus)} 上回っている（赤字）ので、まず固定費の見直しで家計を黒字にするのが先。黒字化した分を ${nisaOrIdeco} に積み立てていく`);
+  }
   if (retReviewed && retReviewed.bankBoost > 0) reviewSources.push(`③ 銀行貯金の超過分 ${formatYen(retReviewed.bankBoost)}（防衛資金 + 5 年以内出費を超える分）を NISA に一括投入${isIDecoPriorityRet ? '（iDeCo は月拠出上限あるので一括投入は NISA で）' : ''}`);
   if (ret.hasToushinBank) reviewSources.push(`④ 投信（銀行窓販）を解約 → ${nisaOrIdeco} に振替`);
   reviewSources.push('※ 学資保険を解約する場合、教育費は別途準備が必要（こども NISA / 月余りからの積立など）。教育費は ⑤ ライフイベントタイムラインで既に計上済み。');
@@ -4786,18 +5147,17 @@ function renderRetirement(d, ret, retInsurance, retBank, retReviewed) {
     <p class="text-xs text-slate-500 mt-2 mb-4">グラフは標準シナリオ（株式 実質 5%）の 4 パターン × 年次の累計資産推移。</p>
 
     ${(() => {
-      // P1-2（2026-06-18）：詳細フォーム版にも「老後の家計はいつまで持つか」追加。
+      // Tier2（2026-06-24 社長承認）：詳細フォーム版も calcCashflow(100) ベースに統一（旧 (い)95歳補填を退役）。
       //   パターンA（今のまま）vs パターンD（全部見直し）の標準シナリオで比較。
-      const stdA = ret.scenarios[2];
-      const stdD = (retReviewed || ret).scenarios[2];
-      if (!stdA || !stdA.assetAtAges) return '';
-      const renderRow = (label, std, color) => {
-        const dep = std.depletionAge;
-        const ages = std.assetAtAges || {};
-        const verdict = (dep == null) ? '✓ 95歳まで持続見込み' : `⚠ ${dep}歳で枯渇見込み`;
+      if (!Array.isArray(ret.scenarios) || ret.scenarios.length < 4) return '';
+      const renderRow = (label, retArg, color) => {
+        const cfRows = calcCashflow(d, retArg, 'standard');
+        const depRow = cfRows.find(r => r.assetRaw <= 0);   // cfRows を再利用（標準の calcCashflow 重複実行を回避）
+        const dep = depRow ? depRow.age : null;
+        const verdict = (dep == null) ? '✓ 100歳まで持続見込み' : `⚠ ${dep}歳で底をつく見込み`;
         const verdictColor = (dep == null) ? '#059669' : '#e11d48';
-        const ageCells = [80, 85, 90, 95].map(a => {
-          const v = ages[a];
+        const ageCells = [80, 85, 90, 95, 100].map(a => {
+          const v = cashflowAssetAt(cfRows, a);
           return `<td class="text-right py-1 px-2 text-xs">${v == null ? '—' : formatYen(v)}</td>`;
         }).join('');
         return `<tr style="border-top:1px solid #e2e8f0;">
@@ -4819,11 +5179,12 @@ function renderRetirement(d, ret, retInsurance, retBank, retReviewed) {
                   <th class="text-right py-2 px-2">85歳</th>
                   <th class="text-right py-2 px-2">90歳</th>
                   <th class="text-right py-2 px-2">95歳</th>
+                  <th class="text-right py-2 px-2">100歳</th>
                 </tr>
               </thead>
               <tbody>
-                ${renderRow('A. 今のまま', stdA, '#94a3b8')}
-                ${renderRow('D. 全部見直し', stdD, '#10b981')}
+                ${renderRow('A. 今のまま', ret, '#94a3b8')}
+                ${renderRow('D. 全部見直し', retReviewed || ret, '#10b981')}
               </tbody>
             </table>
           </div>
@@ -4920,16 +5281,23 @@ function drawCharts(d, result) {
   if (result.retirement.yearsToRetire > 0) {
     const ctx = document.getElementById('retirementChart');
     if (ctx && typeof Chart !== 'undefined') {
-      const labels = result.retirement.scenarios[1].yearly.map(p => `${p.age}歳`);
+      // Tier3後続（2026-06-25 社長承認）：退職グラフを calcCashflow(100) に統一＝頭出しの合否/枯渇と同一エンジン。
+      //   旧 scenarios[1].yearly は (い)モデル（退職後ループ・95歳止まり・退職後ライフイベント未控除）で頭出しと矛盾していた。
+      //   CHART_KEY='standard'：頭出しの主表示「標準◯歳で枯渇」とグラフの枯渇年を一致させる。
+      //   calcRetirement は不可侵＝退職時資産/数値FPは byte 不変。変わるのは描画カーブのみ（assetEnd は0クランプ済＝枯渇後は0で平坦）。
+      const CHART_KEY = 'standard';
       const patternsForChart = [
         { label: 'A. 今のまま', ret: result.retirement, color: '#94a3b8', dash: [] },
         { label: 'B. 保険だけ見直し', ret: result.retirementReviewInsurance, color: '#f59e0b', dash: [6, 3] },
         { label: 'C. 預金だけ有効活用', ret: result.retirementReviewBank, color: '#8b5cf6', dash: [3, 3] },
         { label: 'D. 保険+預金 両方', ret: result.retirementReviewed, color: '#10b981', dash: [] },
       ];
-      const datasets = patternsForChart.map(p => ({
+      // 各パターンを統一エンジン calcCashflow に通す（年齢軸 startAge→100 は全パターン共通）。pattern A を二度計算しないよう先にまとめて算出。
+      const cfByPattern = patternsForChart.map(p => calcCashflow(d, p.ret, CHART_KEY));
+      const labels = cfByPattern[0].map(r => `${r.age}歳`);
+      const datasets = patternsForChart.map((p, i) => ({
         label: p.label,
-        data: p.ret.scenarios[1].yearly.map(point => point.asset),
+        data: cfByPattern[i].map(r => r.assetEnd),
         borderColor: p.color,
         backgroundColor: p.color + '22',
         borderDash: p.dash,
@@ -5325,16 +5693,24 @@ function riskScoreLabel(score) {
 
   /* ===== 仮置きテーブル（未回答フィールドのプレビュー表示専用・保存には混ぜない）
      ペルソナ＝二人以上勤労者世帯（夫婦）の「真ん中くらいの世帯」。数値は2024年の公的統計に基づく。
-       income      : 家計調査2024 二人以上勤労者世帯 年間収入五分位第Ⅲ階級（=真ん中20%の世帯）の可処分所得 月476,248円 → 48万に丸め
-                     （平均値52.2万は高所得世帯に引っ張られ「平均的」の体感から逸脱するため中央値相当の階級値へ変更・2026-06-10 FB⑤）
+     ※ income だけは本人（個人）の手取り月収を使う。会話モードは本人の手取りを聞き、配偶者の手取りは別質問(spouseIncome)で
+       加算して householdIncome で世帯化するため、ここに世帯値を入れると本人質問のデフォルトが過大になる（2026-06-25 社長FB）。
+       income      : 国税庁「民間給与実態統計調査」2024 給与所得者の額面年収【中央値】413万円（第16表 給与階級別分布を線形補間）
+                     × 手取り率78.5%（健保5.0+厚年9.15+雇用0.55+所得税+住民税10）÷12 ＝ 賞与込み月平均の手取り 約27万円 → 27万
+                     （旧48万は世帯可処分所得＝本人手取りを聞く質問のデフォルトに世帯値が出ていた。個人中央値へ修正・2026-06-25 社長FB。
+                      配偶者の手取りは spouseIncome で別途加算され householdIncome で世帯化される＝二重計上にはならない）
        expense     : 同・第Ⅲ階級の消費支出 月312,597円 → 31万に丸め（incomeと同じ階級から取得。黒字163,651円とも整合）
        bank        : 金融広報中央委員会(J-FLEC)2024 二人以上世帯 金融資産 中央値350万円
        housingPlan : フラット35利用者調査2024 建売住宅 全国平均3,826万円 → 3,800万に丸め
        rentMonthly : 住宅・土地統計2023 民営借家の代表値（夫婦の賃貸として8万に据置。民営非木造の平均は68,548円）
+       spouseIncome: 真ん中の夫婦は共働き想定（2026-06-25 社長FB）。配偶者の手取り中央値 18万 → 世帯 27＋18＝45万 vs 支出31万＝黒字。
+                     incomeを個人(27万)にした副作用で「個人27 vs 世帯支出31＝赤字デフォルト」になるのを、配偶者収入で世帯を再構成して解消。
+                     単身を明示選択した人には適用されない（spouseWorks/spouseIncome は family=single で自動スキップ）。
        nisaMonthly : 投資実施者の平均積立は約5万だが自己選択バイアスのため保守的に3万に据置
        age/retireAge/loanMonthly : 代表値（個別統計の特定値ではない） ===== */
   const M = { age:35, job:'employee', family:'married_no_kids', housing:'rent',
-    rentMonthly:80000, loanMonthly:90000, income:480000, expense:310000, bank:3500000,
+    rentMonthly:80000, loanMonthly:90000, income:270000, expense:310000, bank:3500000,
+    spouseIncome:180000,
     nisaMonthly:30000, retireAge:65, housingPlan:38000000 };
 
   /* ===== フォーム書き込みヘルパ（既存フォームDOMに実値をセット＝非破壊で引継ぎ可能に） ===== */
@@ -5354,6 +5730,8 @@ function riskScoreLabel(score) {
     {key:'family', nav:'ご家族の構成は？', type:'choice', median:'夫婦',
       opts:[['独身','single'],['夫婦','married_no_kids'],['子どもあり','with_dependents']],
       // FB-1（2026-06-16）：with_dependents 時の kidCount/kidsAge ハードコード廃止。続く kidCount/kidAge 質問で確定する
+      // 2026-06-25 社長FB：真ん中の人物像は夫婦。スキップ時も「夫婦」確定にして共働きデフォルトに繋げる（単身は明示選択時のみ）
+      skipLabel:'スキップ（夫婦として仮置き）', skipAsValue:'married_no_kids', skipBubble:'（夫婦にしておく）',
       apply(v){ setRadio('family', v); }},
     // 2026-06-18 FB①：家族構成→子の話を続ける（社長指摘）→ kidCount/kidAge を先に・配偶者は後に
     // FB-1：子どもありなら人数を聞く（1-3人）。家族構成≠with_dependents なら skipIf で自動 skip
@@ -5384,16 +5762,18 @@ function riskScoreLabel(score) {
       apply(v){ setVal('kidAge3', v); }},
     // 2026-06-18 FB①：子の質問の後に配偶者を聞く（社長指摘・関連質問のグルーピング）
     // 着手1（2026-06-17）：配偶者の就労Q。家族構成=single の時はスキップ。skip時は'no'確定で残骸対策（世帯化されない）
-    {key:'spouseWorks', nav:'配偶者はお仕事してる？', type:'choice', median:'していない',
+    {key:'spouseWorks', nav:'配偶者はお仕事してる？', type:'choice', median:'働いている',
       opts:[['していない','no'],['働いている','yes']],
       skipIf:()=> document.querySelector('input[name="family"]:checked')?.value === 'single',
-      skipLabel:'スキップ（していない扱いにする）', skipAsValue:'no', skipBubble:'（配偶者は「していない」扱い）',
+      // 2026-06-25 社長FB：真ん中の夫婦は共働き想定。スキップ時は「働いている」確定（単身は family=single で自動スキップ＝不変）
+      skipLabel:'スキップ（働いている扱いにする）', skipAsValue:'yes', skipBubble:'（配偶者は「働いている」扱い）',
       hint:'※ 専業／無職／育休はすべて「していない」（共働きなら「働いている」）',
       apply(v){ setRadio('spouseWorks', v); }},
     // 配偶者の手取り（共働き選択時のみ・skip時は0万円＝世帯化されない＝独身/専業相当）
-    {key:'spouseIncome', nav:'配偶者の手取りは、月いくらくらい？', type:'num', unit:'万円', median:18,
+    {key:'spouseIncome', nav:'配偶者の手取りは、月いくらくらい？', type:'num', unit:'万円', median:Math.round(M.spouseIncome/10000),
       skipIf:()=> document.querySelector('input[name="family"]:checked')?.value === 'single' || document.querySelector('input[name="spouseWorks"]:checked')?.value !== 'yes',
-      skipLabel:'スキップ（あとで入力する）', skipAsValue:0, skipBubble:'（あとで入力する）',
+      // 2026-06-25 社長FB：真ん中の夫婦は共働き想定。スキップ時も中央値18万で仮置き（旧0＝世帯化されないを廃止）
+      skipLabel:'スキップ（真ん中の18万で仮置き）', skipAsValue:Math.round(M.spouseIncome/10000), skipBubble:'（配偶者の手取りは18万で仮置き）',
       apply(v){ setVal('spouseIncome', toYen(v)); }},
     // 2026-06-23：配偶者の年齢（任意）。family=single なら skip 確定。skip 時は 0 のまま＝地図側で配偶者行は非表示（hole）。
     //   入力すると地図側の年表で配偶者リタイア印が「本人年齢 + (retireAge − spouseAge)」の位置に描画される。
@@ -5494,7 +5874,17 @@ function riskScoreLabel(score) {
       apply(v){ setVal('retireMonthly', toYen(v)); }},
     {key:'bigplan', nav:'この先、大きな予定は？', type:'choice', median:'特になし',
       opts:[['住宅購入','house'],['教育費','edu'],['介護の備え','care'],['特になし','none']],
-      apply(v){ if(v==='house'){ setVal('housingPlan', String(M.housingPlan)); setVal('housingPlanYears','10'); } else if(v==='edu'){ setVal('otherShortTerm','3000000'); } else if(v==='care'){ setVal('careMonthly','100000'); setVal('careYears','5'); setVal('careStartYears','15'); } }},
+      // 2026-06-25 code-review C-1：選択を切替えた時に旧選択の値が残らないよう、関係フィールド5本を毎回まずゼロ化してから当該分岐を書き込む。
+      //   ねらいは確認画面の「直す」で『住宅購入 → 特になし』に変更した時に旧 housingPlan/otherShortTerm/careMonthly が残るバグの解消（'none' で何もしない実装が抜けていた）。
+      apply(v){
+        setVal('housingPlan','0'); setVal('housingPlanYears','0');
+        setVal('otherShortTerm','0');
+        setVal('careMonthly','0'); setVal('careYears','0'); setVal('careStartYears','0');
+        if(v==='house'){ setVal('housingPlan', String(M.housingPlan)); setVal('housingPlanYears','10'); }
+        else if(v==='edu'){ setVal('otherShortTerm','3000000'); }
+        else if(v==='care'){ setVal('careMonthly','100000'); setVal('careYears','5'); setVal('careStartYears','15'); }
+        // v==='none' は全フィールド 0 のまま（先頭のゼロ化が効く）
+      }},
   ];
 
   /* ===== どのエリアが「実回答で確定」するか（仮置きを整いスコアから除外するマスク） ===== */
@@ -5513,6 +5903,9 @@ function riskScoreLabel(score) {
     if(!a.has('age')) raw.age = M.age;
     if(!a.has('job')) raw.job = M.job;
     if(!a.has('family')){ raw.family = M.family; raw.kidCount = 0; raw.kidsAge=[]; raw.kidsEdu=[]; }
+    // 2026-06-25 社長FB：真ん中の夫婦は共働き想定。配偶者就労/手取りが未回答かつ単身でないときは共働き18万で仮置き（プレビューも黒字に）
+    if(!a.has('spouseWorks') && raw.family !== 'single'){ raw.spouseWorks = 'yes'; }
+    if(!a.has('spouseIncome') && raw.family !== 'single' && raw.spouseWorks === 'yes'){ raw.spouseIncome = M.spouseIncome; }
     if(!a.has('housing')){ raw.housing='rent'; raw.rentMonthly=M.rentMonthly; }
     if(!a.has('income')) raw.income = M.income;
     if(!a.has('expense')) raw.expense = M.expense;
@@ -5683,15 +6076,253 @@ function riskScoreLabel(score) {
     chat.appendChild(d); chat.scrollTop=chat.scrollHeight; toast('🎉 地図ができた！');
   }
 
+  /* ============================================================
+     入力数値の確認画面（2026-06-25 社長FB）
+     ・「画面の数値以外は計算に反映されない」を要件として、
+       ①🟢回答 / ②🟡仮 / ③🔵自動推計 / ④⚫入れていない の4区分で全項目を一覧表示。
+     ・「直す」は q.apply(newVal) 経由＝会話モード answer() と完全に同じ書き戻し（YMYL不変）。
+     ・自動推計（年金・退職金）は表示のみ・編集不可。
+     ・⚫項目は chip で固定文言（編集不可）。
+     ============================================================ */
+  const CMC_SECTIONS = [
+    { title:'あなたと家族', ico:'👤', rows:[
+      {key:'age',       label:'年齢',                   unit:'才'},
+      {key:'job',       label:'お仕事'},
+      {key:'family',    label:'家族構成'},
+      {key:'kidCount',  label:'子の人数',               unit:'人',
+        showIf:r=> r.family==='with_dependents'},
+      {key:'kidAge1',   label:'上の子の年齢',           unit:'才',
+        showIf:r=> r.family==='with_dependents' && (Number(r.kidCount)||0)>=1},
+      {key:'kidAge2',   label:'真ん中／下の子の年齢',  unit:'才',
+        showIf:r=> r.family==='with_dependents' && (Number(r.kidCount)||0)>=2},
+      {key:'kidAge3',   label:'下の子の年齢',           unit:'才',
+        showIf:r=> r.family==='with_dependents' && (Number(r.kidCount)||0)>=3},
+      {key:'spouseAge', label:'配偶者の年齢',           unit:'才',
+        showIf:r=> r.family && r.family!=='single'},
+    ]},
+    { title:'家計（毎月のお金）', ico:'💰', rows:[
+      {key:'income',       label:'手取りの月収',       sub:'（あなた本人）', unit:'万円'},
+      {key:'spouseWorks',  label:'配偶者は働いてる？',
+        showIf:r=> r.family && r.family!=='single'},
+      {key:'spouseIncome', label:'配偶者の手取り月収', unit:'万円',
+        showIf:r=> r.family && r.family!=='single' && r.spouseWorks==='yes'},
+      {key:'expense',      label:'毎月の出費',         sub:'（NISA・保険・ローン込み）', unit:'万円'},
+    ]},
+    { title:'守りの土台', ico:'🛡️', rows:[
+      {key:'bank', label:'いまの貯金', sub:'（銀行預金）', unit:'万円'},
+    ]},
+    { title:'投資の型', ico:'📈', rows:[
+      {key:'invest',              label:'NISAの月積立',              unit:'万円'},
+      {key:'nisaBalance',         label:'NISAの残高',                 unit:'万円',
+        showIf:r=> r.nisa==='active'},
+      {key:'toushinShin',         label:'NISA以外の投信'},
+      {key:'toushinShinBalance',  label:'NISA以外の投信 残高',       unit:'万円',
+        showIf:r=> r.toushinShin==='bank' || r.toushinShin==='netSecu'},
+      {key:'kojinKokusai',        label:'個人向け国債（変動10年）',  unit:'万円'},
+    ]},
+    { title:'住まい', ico:'🏠', rows:[
+      {key:'housing',     label:'お住まい'},
+      {key:'rentMonthly', label:'毎月の家賃',         unit:'万円', showIf:r=> r.housing==='rent'},
+      {key:'loanMonthly', label:'住宅ローン 月返済',  unit:'万円', showIf:r=> r.housing==='loan'},
+    ]},
+    { title:'ライフイベント', ico:'🎯', rows:[
+      {key:'retire',               label:'何才まで働く？',         unit:'才'},
+      {key:'retireMonthlyDesired', label:'老後の希望生活費',       unit:'万円/月'},
+      {key:'bigplan',              label:'この先の大きな予定'},
+    ]},
+    { title:'保障（保険）', ico:'🩺', rows:[
+      {key:'insLifeStatus',  label:'死亡保障に入ってる？'},
+      {key:'insDeathBenefit', label:'死亡時の保険金合計', unit:'万円',
+        showIf:r=> r.insLifeStatus==='yes', noneIfHidden:true},
+    ]},
+  ];
+
+  // 表示元の raw キーと万円換算の要否を Q.apply から逆引きしたマップ（行→raw）
+  const CMC_VALUE_MAP = {
+    age:                 { raw:'age',                  isYen:false },
+    job:                 { raw:'job',                  isYen:false, choice:true },
+    income:              { raw:'income',               isYen:true  },
+    family:              { raw:'family',               isYen:false, choice:true },
+    kidCount:            { raw:'kidCount',             isYen:false, choice:true },
+    kidAge1:             { raw:'kidAge1',              isYen:false },
+    kidAge2:             { raw:'kidAge2',              isYen:false },
+    kidAge3:             { raw:'kidAge3',              isYen:false },
+    spouseWorks:         { raw:'spouseWorks',          isYen:false, choice:true },
+    spouseIncome:        { raw:'spouseIncome',         isYen:true  },
+    spouseAge:           { raw:'spouseAge',            isYen:false },
+    housing:             { raw:'housing',              isYen:false, choice:true },
+    rentMonthly:         { raw:'rentMonthly',          isYen:true  },
+    loanMonthly:         { raw:'loanMonthly',          isYen:true  },
+    expense:             { raw:'expense',              isYen:true  },
+    bank:                { raw:'bank',                 isYen:true  },
+    invest:              { raw:'nisaMonthly',          isYen:true  },
+    nisaBalance:         { raw:'nisaBalance',          isYen:true  },
+    toushinShin:         { raw:'toushinShin',          isYen:false, choice:true },
+    toushinShinBalance:  { raw:'toushinShinBalance',   isYen:true  },
+    kojinKokusai:        { raw:'kojinKokusaiBalance',  isYen:true  },
+    insLifeStatus:       { raw:'insLifeStatus',        isYen:false, choice:true },
+    insDeathBenefit:     { raw:'insDeathBenefit',      isYen:true  },
+    retire:              { raw:'retireAge',            isYen:false },
+    retireMonthlyDesired:{ raw:'retireMonthly',        isYen:true  },
+    bigplan:             { raw:null,                   isYen:false, choice:true },
+  };
+
+  // bigplan は housingPlan/otherShortTerm/careMonthly に分解されるため raw から逆引きで判定
+  function cmcBigplanText(raw){
+    if((raw.housingPlan||0)>0)    return '住宅購入';
+    if((raw.otherShortTerm||0)>0) return '教育費';
+    if((raw.careMonthly||0)>0)    return '介護の備え';
+    return '特になし';
+  }
+
+  function cmcFormatDisplay(rowKey, raw){
+    if(rowKey === 'bigplan') return cmcBigplanText(raw);
+    const m = CMC_VALUE_MAP[rowKey]; if(!m) return '';
+    const v = raw[m.raw];
+    if(m.choice){
+      const q = Q.find(qq => qq.key === rowKey);
+      if(q && q.opts){
+        const pair = q.opts.find(o => String(o[1]) === String(v));
+        if(pair) return pair[0];
+      }
+      return v != null && v !== '' ? String(v) : '—';
+    }
+    if(m.isYen) return Math.round((Number(v)||0)/10000);
+    return (v != null && v !== '') ? String(v) : '0';
+  }
+
+  // M由来の仮置きが入りうるキー（buildPreviewRaw / collectInputForLite が中央値で埋めるキー群）。
+  //   answered.has(key) なら 🟢、ここに含まれていて answered でないなら 🟡、含まれなければ ⚫。
+  const CMC_KARI_KEYS = new Set([
+    'age','job','family','income','expense','bank','housing','rentMonthly','loanMonthly',
+    'invest','retire','retireMonthlyDesired','spouseWorks','spouseIncome','spouseAge','bigplan',
+    'kidCount','kidAge1','kidAge2','kidAge3',
+    'nisaBalance','toushinShin','toushinShinBalance','kojinKokusai',
+    'insLifeStatus','insDeathBenefit',
+  ]);
+  function cmcClassify(rowKey){
+    if(state.answered.has(rowKey)) return 'ans';
+    if(CMC_KARI_KEYS.has(rowKey))  return 'kari';
+    return 'none';
+  }
+
+  function cmcBadge(cls){
+    const map = {
+      ans:  { c:'cmc-b-ans',  t:'回答' },
+      kari: { c:'cmc-b-kari', t:'仮' },
+      auto: { c:'cmc-b-auto', t:'自動' },
+      none: { c:'cmc-b-none', t:'入れていない' },
+    };
+    const m = map[cls] || map.none;
+    return `<span class="cmc-badge ${m.c}"><span class="cmc-dot"></span>${m.t}</span>`;
+  }
+
+  function cmcRenderRow(row, raw){
+    if(row.showIf && !row.showIf(raw)){
+      if(row.noneIfHidden){
+        return `<div class="cmc-row" data-key="${row.key}">
+          <div class="cmc-label"><b>${row.label}</b>${row.sub?`<span class="cmc-sub">${row.sub}</span>`:''}</div>
+          <div class="cmc-val"><span class="cmc-dash">—</span>${cmcBadge('none')}</div>
+        </div>`;
+      }
+      return '';
+    }
+    const cls = cmcClassify(row.key);
+    const dispText = cmcFormatDisplay(row.key, raw);
+    const editable = (cls === 'ans' || cls === 'kari');
+    return `<div class="cmc-row" data-key="${row.key}">
+      <div class="cmc-label"><b>${row.label}</b>${row.sub?`<span class="cmc-sub">${row.sub}</span>`:''}</div>
+      <div class="cmc-val">${esc(String(dispText))}${row.unit?`<span class="cmc-unit">${row.unit}</span>`:''}${cmcBadge(cls)}</div>
+      <div class="cmc-editbox" data-key="${row.key}"></div>${editable ? `<button class="cmc-edit" data-key="${row.key}">直す</button>` : ''}
+    </div>`;
+  }
+
+  function cmcRenderSections(){
+    const raw = (typeof collectInputForLite === 'function') ? collectInputForLite() : ((typeof collectInput === 'function') ? collectInput() : {});
+    const wrap = $$('cmc-sections'); if(!wrap) return;
+    let html = '';
+    CMC_SECTIONS.forEach(sec => {
+      const rowsHtml = sec.rows.map(r => cmcRenderRow(r, raw)).filter(Boolean).join('');
+      if(!rowsHtml) return;
+      html += `<div class="cmc-grp"><h3><span class="cmc-ico">${sec.ico}</span>${sec.title}</h3>${rowsHtml}</div>`;
+    });
+    // 🔵 自動推計セクション（編集不可）
+    const pensionSelf = (typeof estimatePensionMonthly === 'function') ? estimatePensionMonthly(Number(raw.income)||0, raw.job||'employee') : 0;
+    const pensionSpouse = (raw.family && raw.family !== 'single' && raw.spouseWorks === 'yes' && typeof estimatePensionMonthly === 'function')
+      ? estimatePensionMonthly(Number(raw.spouseIncome)||0, 'employee') : 0;
+    const pensionTotalMan = Math.round((pensionSelf + pensionSpouse) / 1000) / 10; // 万円・小数1位
+    const bonusMan = Math.round((Number(raw.retirementBonus)||0) / 10000);
+    html += `<div class="cmc-grp cmc-auto">
+      <h3><span class="cmc-ico">⚙️</span>自動で推計している値<span class="cmc-locked">編集不可</span></h3>
+      <div class="cmc-row"><div class="cmc-label"><b>公的年金（受給見込み）</b><span class="cmc-sub">職業・世帯から自動計算</span></div>
+        <div class="cmc-val">月 ${pensionTotalMan}<span class="cmc-unit">万円</span>${cmcBadge('auto')}</div></div>
+      <div class="cmc-row"><div class="cmc-label"><b>退職金（見込み）</b><span class="cmc-sub">勤続年数から自動推計（額面）</span></div>
+        <div class="cmc-val">約 ${bonusMan.toLocaleString()}<span class="cmc-unit">万円</span>${cmcBadge('auto')}</div></div>
+      <div class="cmc-autonote">※ 詳細フォームで退職金・年金額を入れたら、その値で上書きされます。</div>
+    </div>`;
+    wrap.innerHTML = html;
+    wrap.querySelectorAll('.cmc-edit').forEach(btn => {
+      btn.addEventListener('click', ()=> cmcStartEdit(btn.getAttribute('data-key')));
+    });
+  }
+
+  function cmcStartEdit(key){
+    const row = document.querySelector(`#cmc-sections .cmc-row[data-key="${key}"]`);
+    if(!row) return;
+    const q = Q.find(qq => qq.key === key); if(!q) return;
+    const editbox = row.querySelector('.cmc-editbox'); if(!editbox) return;
+    const raw = collectInputForLite();
+    let inputHtml = '';
+    if(q.type === 'choice'){
+      inputHtml = `<select>${q.opts.map(o => `<option value="${esc(String(o[1]))}">${esc(o[0])}</option>`).join('')}</select>`;
+    } else {
+      const currentDisp = cmcFormatDisplay(key, raw);
+      inputHtml = `<input type="text" inputmode="numeric" value="${esc(String(currentDisp))}"><span class="cmc-unit">${esc(String(q.unit||''))}</span>`;
+    }
+    editbox.innerHTML = inputHtml + `<button class="cmc-ok">直す</button><button class="cmc-cancel">やめる</button>`;
+    row.classList.add('cmc-editing');
+    if(q.type === 'choice'){
+      const sel = editbox.querySelector('select');
+      const m = CMC_VALUE_MAP[key];
+      const cur = m && m.raw ? raw[m.raw] : null;
+      if(sel && cur != null && cur !== '') sel.value = cur;
+    }
+    editbox.querySelector('.cmc-ok').addEventListener('click', ()=> cmcConfirmEdit(key));
+    editbox.querySelector('.cmc-cancel').addEventListener('click', ()=> row.classList.remove('cmc-editing'));
+    const inp = editbox.querySelector('input, select');
+    if(inp){ setTimeout(()=>{ inp.focus && inp.focus(); inp.select && inp.select(); }, 30); }
+  }
+
+  function cmcConfirmEdit(key){
+    const row = document.querySelector(`#cmc-sections .cmc-row[data-key="${key}"]`);
+    if(!row) return;
+    const editbox = row.querySelector('.cmc-editbox');
+    const inp = editbox && editbox.querySelector('input, select');
+    const newVal = inp ? inp.value : '';
+    const q = Q.find(qq => qq.key === key); if(!q) return;
+    q.apply(newVal);              // 既存と完全同形の書き戻し（setVal/setRadio）
+    state.answered.add(key);      // 仮 → 回答に昇格
+    cmcRenderSections();          // 条件付き行の出し入れも含めて全部再描画
+  }
+
+  function showConfirm(){
+    cmcRenderSections();
+    const node = $$('cm-confirm'); if(node) node.style.display = 'block';
+    setTimeout(()=>{ document.getElementById('cm-confirm')?.scrollIntoView({behavior:'smooth', block:'start'}); }, 60);
+  }
+
   /* ===== 完了後の導線 ===== */
+  // 2026-06-25 社長FB対応：会話完走 → 確認画面 → 簡易結果 の流れに変更。
+  //   cm-toResult は showConfirm() を呼ぶだけにし、従来の lite 表示処理は cmc-toResult に移植。
+  $$('cm-toResult')?.addEventListener('click', ()=> showConfirm());
+
   // 2026-06-17 社長FB対応：会話モード経由は「簡易版」へ。詳細フォーム前提の Rule 1-14 / 保険見直し効果は出さない。
   // 軸A対応：collectInputForLite が会話モードで聞いていないフィールド（保険系・暗号資産・dcBalance 等）を強制ゼロ化し、
   // localStorage 残留による「変額やめれば+372万」のような断定的YMYL結論を出さないようにする。
   // 詳細を見たい人は CTA 3箇所から詳細フォームへ。saveToStorage は呼ばない（軸A対応の上書きを localStorage に書かない）。
-  $$('cm-toResult')?.addEventListener('click', ()=>{
+  $$('cmc-toResult')?.addEventListener('click', ()=>{
     root.classList.add('step-hidden');
     if (typeof collectInputForLite !== 'function' || typeof diagnoseLite !== 'function' || typeof renderResultLite !== 'function') {
-      // 簡易版関数が未定義の場合のフォールバック（保険：万一の事故時に詳細結果も出さない）
       alert('簡易版の表示準備ができていません。ページを再読み込みしてお試しください。');
       return;
     }
@@ -5705,13 +6336,15 @@ function riskScoreLabel(score) {
     if (target) target.classList.remove('step-hidden');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-  $$('cm-toFull')?.addEventListener('click', ()=>{
+  // 詳細フォームへの送り出し（確認画面・会話完走フッターの両方から）
+  function cmcGoFull(){
     root.classList.add('step-hidden');
-    // 2026-06-18 FB④：結果セクション排他制御。前回の結果が両方表示で残らないように。
     document.getElementById('step-result')?.classList.add('step-hidden');
     document.getElementById('step-result-lite')?.classList.add('step-hidden');
     const si=document.getElementById('step-input'); if(si){ si.classList.remove('step-hidden'); window.scrollTo({top:0,behavior:'smooth'}); }
-  });
+  }
+  $$('cm-toFull')?.addEventListener('click', cmcGoFull);
+  $$('cmc-toFull')?.addEventListener('click', cmcGoFull);
 
   /* ===== 起動（agree-btnから呼ばれる） ===== */
   window.cmBoot = function(){

@@ -948,6 +948,33 @@ function eventCostByAge(d){
   return byAge;
 }
 
+// P0-A/P1-2 追従（2026-06-25 Tier3）：健診 index.html から byte 移植したヘルパー。地図 calcRetirement を健診の世帯化形に揃える。
+//   estimatePensionMonthly：年金の職業別推計（健診 index.html:2429-2434 と同一）。会社員は ×0.5＝従来式と同値で 3コア不変。
+//   calcRetirementBonusNet：退職金の税引後手取り＋配偶者世帯合算（健診 index.html:2458-2474 と同一）。
+function estimatePensionMonthly(income, job){
+  if (!Number.isFinite(income) || income <= 0) return 0;
+  if (job === 'self')   return 65000;
+  if (job === 'public') return Math.round(income * 0.55);
+  return Math.round(income * 0.5);
+}
+function calcRetirementBonusNet(d){
+  const calcSingle = (amount, serviceYr, retireAge) => {
+    if (!Number.isFinite(amount) || amount <= 0) return 0;
+    const years = (Number.isFinite(serviceYr) && serviceYr > 0) ? serviceYr : Math.max(1, (retireAge || 60) - 22);
+    const deduction = years <= 20
+      ? Math.max(800000, 400000 * years)
+      : 8000000 + 700000 * (years - 20);
+    const taxable = Math.max(0, (amount - deduction) / 2);
+    const tax = Math.round(taxable * 0.20);
+    return amount - tax;
+  };
+  const selfNet = calcSingle(d.retirementBonus || 0, d.serviceYears, d.retireAge || 60);
+  const spouseNet = ((d.family || 'single') !== 'single' && d.spouseWorks === 'yes')
+    ? calcSingle(d.spouseRetirementBonus || 0, d.spouseServiceYears, d.retireAge || 60)
+    : 0;
+  return selfNet + spouseNet;
+}
+
 function calcRetirement(d, reviewOptions, emergencyFund = 0, shortTermTotal = 0, migrateOpts = null){
   // FB-5（2026-06-17 社長承認）：第5引数 migrateOpts を追加。null/未指定なら既存挙動 byte 一致＝YMYL不変。
   //   { annualMigrate, totalMigrate } を渡すと、退職前の年次ループで「銀行→NISA(stockB)」へ年 annualMigrate を移動し、
@@ -965,8 +992,10 @@ function calcRetirement(d, reviewOptions, emergencyFund = 0, shortTermTotal = 0,
   const nisaBalActive = (d.nisa === 'active') ? (d.nisaBalance || 0) : 0;
   const toushinBalActiveBank = (d.toushinShin === 'bank') ? (d.toushinShinBalance || 0) : 0;
   const toushinBalActiveNet = (d.toushinShin === 'netSecu') ? (d.toushinShinBalance || 0) : 0;
-  const dcBal = d.dcBalance || 0;
-  const pureSurplus = Math.max(0, householdIncome(d) - (d.expense || 0));   // 派生C：余り＝世帯収入−支出（配偶者収入を反映）
+  // P1-6 追従（2026-06-25 Tier3）：配偶者DCを世帯化（健診 index.html:2598-2599 と同形）。spouseWorks=yes & 家族構成あり時のみ加算。
+  const _isHouseholdDc = (d.family || 'single') !== 'single' && d.spouseWorks === 'yes';
+  const dcBal = (d.dcBalance || 0) + (_isHouseholdDc ? (d.spouseDcBalance || 0) : 0);
+  const pureSurplus = householdIncome(d) - (d.expense || 0);   // 2026-06-24 fix①：赤字はマイナスのまま流す＝健診 index.html と同形（旧 Math.max(0,…) は赤字を0に丸めていた）。派生C：配偶者収入を反映
   const gakushiM = (d.gakushi === 'yes') ? (d.gakushiMonthly || 0) : 0;
   const hengakuM = (d.hengaku === 'yes') ? (d.hengakuMonthly || 0) : 0;
   const kojinM = (d.kojinNenkin === 'yes') ? (d.kojinNenkinMonthly || 0) : 0;
@@ -974,9 +1003,14 @@ function calcRetirement(d, reviewOptions, emergencyFund = 0, shortTermTotal = 0,
   const nisaM = (d.nisa === 'active') ? (d.nisaMonthly || 0) : 0;
   const toushinNetM = (d.toushinShin === 'netSecu') ? (d.toushinShinMonthly || 0) : 0;
   const toushinBankM = (d.toushinShin === 'bank') ? (d.toushinShinMonthly || 0) : 0;
-  const dcM = d.dcMonthly || 0;
+  const dcM = (d.dcMonthly || 0) + (_isHouseholdDc ? (d.spouseDcMonthly || 0) : 0);   // P1-6 追従（2026-06-25 Tier3）：配偶者DC月額も世帯化
   const pensionMul = d.pensionStartAge === 60 ? 0.76 : d.pensionStartAge === 70 ? 1.42 : d.pensionStartAge === 75 ? 1.84 : 1;
-  const pensionBase = d.pension > 0 ? d.pension : Math.round((d.income || 0) * 0.5);   // 派生C：年金推計は本人ベース維持（配偶者の年金は今回入れない＝householdIncomeを使わない）
+  // P0-A 追従（2026-06-25 Tier3）：年金推計を職業別＋世帯化（健診 index.html:2624-2628 と同形）。d.pension>0 入力時は従来どおり優先＝3コア不変・会社員は ×0.5 で同値。
+  const myPension = d.pension > 0 ? d.pension : estimatePensionMonthly(d.income, d.job);
+  const spousePension = ((d.family || 'single') !== 'single' && d.spouseWorks === 'yes')
+    ? estimatePensionMonthly(d.spouseIncome, d.job)
+    : 0;
+  const pensionBase = myPension + spousePension;
   const pensionEst = Math.round(pensionBase * pensionMul);
   const bankExcess = Math.max(0, initialBank - emergencyFund - shortTermTotal);
   // 派生D3 v2（工程③）：module-level SCENARIOS（L18-25）を参照。要素・順序・rate は従来のローカル定義と完全に同じ＝挙動不変。
@@ -1038,10 +1072,10 @@ function calcRetirement(d, reviewOptions, emergencyFund = 0, shortTermTotal = 0,
       }
       yearlySurplus += annualIncrease;
     }
-    const retirementBonus = d.retirementBonus || 0; stockB += retirementBonus;
+    const retirementBonus = calcRetirementBonusNet(d); stockB += retirementBonus;   // P1-2/P1-4 追従（2026-06-25 Tier3）：税引後手取り＋配偶者退職金を世帯合算（健診 index.html:2753-2757 と同形）
     const total = bankB + kojinB + gaikaB + hengakuB + toushinBankB + stockB + currentCrypto;
     if (yearly.length > 0) yearly[yearly.length - 1].asset = total;
-    const monthlyWithdraw = (total * 0.04) / 12;
+    const monthlyWithdraw = (Math.max(0, total) * 0.04) / 12;   // 2026-06-24 fix②：健診と同形。総資産が負なら取崩0
     const totalMonthlyIncome = pensionEst + monthlyWithdraw;
     const gap = (d.retireMonthly || 0) - totalMonthlyIncome;
     return { label: s.label, color: s.color, key: s.key, total, monthlyWithdraw, totalMonthlyIncome, gap, yearly };
@@ -1251,7 +1285,7 @@ function calcCashflow(d, ret, scenarioKey = 'standard'){
     }
     rows.push({ age, status, incomeAnnual, expenseAnnual, surplusAnnual, assetEnd: Math.max(0, assetEnd),
       // P2①：退職一時金は「表示専用」。収入バー/余り/資産には混ぜない（資産は 839行で stockB に加算済み＝二重計上しない）
-      bonusAnnual: (age === retireAge) ? (d.retirementBonus || 0) : 0 });
+      bonusAnnual: (age === retireAge) ? calcRetirementBonusNet(d) : 0 });   // Tier3 確認点C（2026-06-25）：💰緑バーの高さを資産ジャンプ(=税引後net・配偶者合算)に一致させる
   }
   return rows;
 }
@@ -1348,7 +1382,9 @@ function buildExitData(d, dx, scenarioKey = 'standard', nisaMig = null){
   const std = ret.scenarios.find(s => s.key === scenarioKey) || ret.scenarios[0];   // 派生D3 v2：scenarioKey で選択（=standard時は従来と一致）
   const depletionAge = base.depletionAge;
   const pensionEst = ret.pensionEst || 0;                                  // 円/月（現状の倍率込み）
-  const pensionBase = (d.pension > 0 ? d.pension : Math.round((d.income||0)*0.5)); // ×1.0基準
+  // P0-A 追従（2026-06-25 Tier3）：calcRetirement と同じ職業別＋世帯化式に揃える（年金繰上げ表・繰下げレバー表示の画面内整合）。×1.0基準。
+  const _spousePensionBase = ((d.family || 'single') !== 'single' && d.spouseWorks === 'yes') ? estimatePensionMonthly(d.spouseIncome, d.job) : 0;
+  const pensionBase = (d.pension > 0 ? d.pension : estimatePensionMonthly(d.income, d.job)) + _spousePensionBase; // ×1.0基準
   // G7（2026-06-22）：P1-11 後続バックログ解消。Y経路対応のため引数3本渡し＋リタイア+10年後の値も計算。
   //   X経路（retirementYear<2058）：age=retireAge も retireAge+10 も 50% で従来通り＝単独表示「50」。
   //   Y経路（retirementYear>=2058）：リタイア直後 50%→10年で 35% グライドダウン＝レンジ表示「50→35」。
@@ -1459,7 +1495,7 @@ function buildExitData(d, dx, scenarioKey = 'standard', nisaMig = null){
   return { retireAge, pensionStartAge, hasDepletion: !!depletionAge, depletionAge, years, shortfallMan,
            policy, pensionTable, cfTable, levers, chart, analysis,
            pensionAssumed: !(d.pension > 0),            // W-4：年金額が未入力＝手取り×50%で仮置き中
-           hasRetireBonus: (d.retirementBonus || 0) > 0, // W-5：退職金あり＝税引き後入力の注記を出す
+           hasRetireBonus: (d.retirementBonus || 0) > 0 || (((d.family || 'single') !== 'single' && d.spouseWorks === 'yes') && (d.spouseRetirementBonus || 0) > 0), // W-5：退職金あり（配偶者退職金含む・Tier3 確認点D）＝税引き後手取り計算の注記を出す
            allVisited,                                   // ⑧P4：全駅ツアー完了フラグ
            nisaMigExit };                                // FB-5: 「移行する」線の枯渇年齢・退職時資産（applies=false / nisaMig=null なら null）
 }
@@ -2360,10 +2396,19 @@ const CONSULT_URL = 'https://smart-side.dev/about';
    gotoAreaSafe：天気チップ/年表/駅カード/次の一手から。locked（MVPでは休眠）だけ paywall へ。 */
 function gotoArea(key){ location.href = areaURL(key); }
 window.gotoArea = gotoArea;
+/* 健診のカード単位モードに送れるエリア（exit は locked＝ペイウォールなので対象外）。
+   地図と健診は同一オリジン（/ と /map/）なので '../?card=KEY' で健診へ往復できる（dev/本番とも）。 */
+const CARD_EDITABLE = { cashflow:1, defense:1, coverage:1, allocation:1, housing:1, lifeevent:1 };
 function gotoAreaSafe(key){
   const a = ((CURRENT && CURRENT.areas) || []).find(x => x.key === key);
   if (a && a.status === 'locked'){
     if (PAGE === 'hub') location.hash = '#paywall'; else location.href = hubFileName() + '#paywall';
+    return;
+  }
+  // 2026-06-24：穴あきカード（empty/attention）は健診のカード単位モードへ送り、本物の詳細項目で埋める。
+  //   filled/reviewed は従来どおり spoke（深掘りページ）。exit は上で locked により弾かれる。
+  if (a && (a.status === 'empty' || a.status === 'attention') && CARD_EDITABLE[key]){
+    location.href = '../?card=' + encodeURIComponent(key);
     return;
   }
   location.href = areaURL(key);
